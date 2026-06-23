@@ -17,6 +17,9 @@ export function Nav() {
           <Link href="/console" className="hover:text-slate-900">
             Manufacturer Console
           </Link>
+          <Link href="/live" className="hover:text-slate-900">
+            Live Consistency
+          </Link>
         </nav>
       </div>
     </header>

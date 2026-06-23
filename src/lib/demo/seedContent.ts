@@ -22,6 +22,10 @@ export async function seedContent(): Promise<void> {
       "A recall rarely covers every unit ever made. Target an exact serial range so safe units keep selling and only affected units are blocked."],
     ["tech.consistency", "tech", "The guarantee",
       "SafeState is built on Amazon Aurora DSQL. A recall and a sale of the same model write the same guard row, so DSQL's optimistic concurrency control detects the conflict (SQLSTATE 40001 / OC000) and the losing transaction retries against the new truth. Result: no stale-safe read, ever."],
+    ["passport.heading", "passport", "Safety Passport",
+      "Every product carries a living safety record that follows it from owner to owner — not just the original buyer."],
+    ["passport.explainer", "passport", "Why this matters",
+      "When a product is resold, the recall obligation should travel with it. SafeState keeps a per-unit safety history and can reach whoever owns it now — even years after the first sale."],
   ];
 
   const help: [string, string, string, string | null][] = [
@@ -36,6 +40,8 @@ export async function seedContent(): Promise<void> {
     ["dsql.consistency", "Strong consistency, globally",
       "Aurora DSQL is active-active across regions with strong consistency. A safety status committed in one region is immediately visible from any region — there is no replication lag window where a recalled product still reads as safe.",
       "https://aws.amazon.com/rds/aurora/dsql/"],
+    ["passport.timeline", "The safety record",
+      "Each entry is a safety directive (recall, repair, or destroy) issued against this product's model, with the hazard and remedy. The newest is on top. A clear record means none are active.", null],
   ];
 
   const tutorial: [string, number, string, string, string][] = [

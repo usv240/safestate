@@ -42,6 +42,8 @@ export async function seedContent(): Promise<void> {
       "https://aws.amazon.com/rds/aurora/dsql/"],
     ["passport.timeline", "The safety record",
       "Each entry is a safety directive (recall, repair, or destroy) issued against this product's model, with the hazard and remedy. The newest is on top. A clear record means none are active.", null],
+    ["match.assistant", "How matching works",
+      "The assistant compares a listing's text against the live CPSC recall feed. With an Anthropic API key it uses Claude (claude-opus-4-8); otherwise it falls back to a keyword heuristic. High confidence auto-flags, medium routes to review, low passes.", null],
   ];
 
   const tutorial: [string, number, string, string, string][] = [

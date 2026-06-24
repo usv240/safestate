@@ -13,7 +13,7 @@ import {
   Building2,
 } from "lucide-react";
 import { apiGet } from "@/lib/client/api";
-import { Badge, Button, Card, Container, Eyebrow } from "@/components/ui";
+import { Badge, buttonClass, Card, Container, Eyebrow } from "@/components/ui";
 import { InfoButton } from "@/components/InfoButton";
 
 interface Block { key: string; title: string | null; body_md: string | null }
@@ -56,15 +56,11 @@ export default function Home() {
                 "A recall is just information until something acts on it."}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/gate">
-                <Button size="lg">
-                  See the Marketplace Gate <ArrowRight className="h-4 w-4" />
-                </Button>
+              <Link href="/gate" className={buttonClass("primary", "lg")}>
+                See the Marketplace Gate <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link href="/console">
-                <Button size="lg" variant="secondary">
-                  Open the Console
-                </Button>
+              <Link href="/console" className={buttonClass("secondary", "lg")}>
+                Open the Console
               </Link>
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-500">

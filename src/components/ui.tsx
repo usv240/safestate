@@ -23,6 +23,14 @@ const sizes: Record<Size, string> = {
   lg: "h-12 px-6 text-[15px]",
 };
 
+const buttonBase =
+  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f7f8fa] disabled:pointer-events-none disabled:opacity-50";
+
+/** Button styles usable on any element (e.g. a Next <Link>) without nesting a <button>. */
+export function buttonClass(variant: Variant = "primary", size: Size = "md", className?: string) {
+  return cn(buttonBase, variants[variant], sizes[size], className);
+}
+
 export function Button({
   variant = "primary",
   size = "md",
@@ -31,15 +39,7 @@ export function Button({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; size?: Size }) {
   return (
-    <button
-      className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f7f8fa] disabled:pointer-events-none disabled:opacity-50",
-        variants[variant],
-        sizes[size],
-        className,
-      )}
-      {...props}
-    >
+    <button className={buttonClass(variant, size, className)} {...props}>
       {children}
     </button>
   );

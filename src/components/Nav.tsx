@@ -6,10 +6,11 @@ import { ShieldCheck } from "lucide-react";
 import { cn } from "@/components/ui";
 
 const links = [
-  { href: "/gate", label: "Marketplace Gate" },
-  { href: "/console", label: "Manufacturer Console" },
-  { href: "/passport", label: "Safety Passport" },
+  { href: "/gate", label: "Gate" },
+  { href: "/console", label: "Console" },
+  { href: "/passport", label: "Passport" },
   { href: "/live", label: "Live Consistency" },
+  { href: "/how-it-works", label: "How it works" },
 ];
 
 export function Nav() {
@@ -37,7 +38,7 @@ export function Nav() {
                   "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   active
                     ? "bg-slate-100 text-ink-900"
-                    : "text-ink-500 hover:bg-slate-50 hover:text-ink-900",
+                    : "text-ink-700 hover:bg-slate-50 hover:text-ink-900",
                 )}
               >
                 {l.label}

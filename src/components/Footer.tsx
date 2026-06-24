@@ -9,7 +9,13 @@ export function Footer() {
           <span className="font-medium text-ink-700">Amazon Aurora DSQL</span> +{" "}
           <span className="font-medium text-ink-700">Vercel</span>.
         </p>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
+          <Link href="/how-it-works" className="hover:text-ink-900">
+            How it works
+          </Link>
+          <Link href="/developers" className="hover:text-ink-900">
+            Developers
+          </Link>
           <Link href="/live" className="hover:text-ink-900">
             Live Consistency
           </Link>

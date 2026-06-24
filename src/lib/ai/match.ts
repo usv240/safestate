@@ -41,7 +41,7 @@ function heuristicMatch(text: string, cands: Candidate[]): MatchResult {
   );
   let best: { c: Candidate; score: number } | null = null;
   for (const c of cands) {
-    const hay = `${c.title} ${c.product}`.toLowerCase().split(/\W+/);
+    const hay = `${c.product} ${c.hazard}`.toLowerCase().split(/\W+/);
     let overlap = 0;
     for (const w of hay) if (toks.has(w)) overlap += 1;
     const score = overlap / Math.max(6, toks.size);
@@ -53,7 +53,7 @@ function heuristicMatch(text: string, cands: Candidate[]): MatchResult {
     decision: decide(confidence),
     confidence,
     recallNumber: matched?.recall_number ?? null,
-    recallTitle: matched?.title ?? null,
+    recallTitle: matched?.product ?? null,
     reasoning: matched
       ? `Keyword overlap with "${matched.title}".`
       : "No meaningful keyword overlap with active recalls.",
@@ -64,7 +64,7 @@ function heuristicMatch(text: string, cands: Candidate[]): MatchResult {
 async function aiMatch(text: string, cands: Candidate[], apiKey: string): Promise<MatchResult> {
   const client = new Anthropic({ apiKey });
   const catalog = cands
-    .map((c) => `- ${c.recall_number}: ${c.title} | product: ${c.product}`)
+    .map((c) => `- ${c.recall_number}: ${c.product} — ${(c.hazard || "").slice(0, 100)}`)
     .join("\n");
 
   const schema = {
@@ -104,7 +104,7 @@ async function aiMatch(text: string, cands: Candidate[], apiKey: string): Promis
     decision: decide(confidence),
     confidence,
     recallNumber: matched?.recall_number ?? null,
-    recallTitle: matched?.title ?? null,
+    recallTitle: matched?.product ?? null,
     reasoning: parsed.reasoning || "",
     mode: "ai",
   };

@@ -64,8 +64,10 @@ export default function RecallsPage() {
                     <ShieldAlert className="h-4.5 w-4.5" />
                   </span>
                   <div>
-                    <h3 className="font-semibold leading-snug text-ink-900">{r.title}</h3>
-                    {r.product && <p className="mt-0.5 text-sm text-ink-500">{r.product}</p>}
+                    <h3 className="font-semibold leading-snug text-ink-900">
+                      {r.product || "Recalled product"}
+                    </h3>
+                    <p className="mt-0.5 text-xs text-ink-500">CPSC recall #{r.recall_number}</p>
                   </div>
                 </div>
                 <div className="flex shrink-0 items-center gap-3">

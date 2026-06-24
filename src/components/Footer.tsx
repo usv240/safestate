@@ -16,6 +16,9 @@ export function Footer() {
           <Link href="/developers" className="hover:text-ink-900">
             Developers
           </Link>
+          <Link href="/recalls" className="hover:text-ink-900">
+            Recalls
+          </Link>
           <Link href="/live" className="hover:text-ink-900">
             Live Consistency
           </Link>

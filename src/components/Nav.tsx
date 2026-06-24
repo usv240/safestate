@@ -10,7 +10,7 @@ const links = [
   { href: "/console", label: "Console" },
   { href: "/passport", label: "Passport" },
   { href: "/live", label: "Live Consistency" },
-  { href: "/how-it-works", label: "How it works" },
+  { href: "/recalls", label: "Recalls" },
 ];
 
 export function Nav() {

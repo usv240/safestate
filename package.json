@@ -10,7 +10,8 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "demo:race": "tsx scripts/race-demo.ts",
-    "demo:cross-region": "tsx scripts/cross-region.ts"
+    "demo:cross-region": "tsx scripts/cross-region.ts",
+    "db:ingest": "tsx scripts/ingest-cpsc.ts"
   },
   "dependencies": {
     "@aws-sdk/dsql-signer": "^3.1072.0",

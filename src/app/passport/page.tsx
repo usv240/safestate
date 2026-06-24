@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ShieldCheck, AlertTriangle, User, BellRing, Baby } from "lucide-react";
 import { apiGet } from "@/lib/client/api";
+import { Badge, Card, Container, Eyebrow } from "@/components/ui";
 import { InfoButton } from "@/components/InfoButton";
 
 interface Block { key: string; title: string | null; body_md: string | null }
@@ -60,93 +62,96 @@ export default function PassportPage() {
   const b = (k: string) => blocks.find((x) => x.key === k);
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10">
-      <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-        {b("passport.heading")?.title ?? "Safety Passport"}
-        <InfoButton topicId="passport.timeline" />
-      </h1>
-      <p className="mt-1 max-w-2xl text-sm text-slate-600">
-        {b("passport.explainer")?.body_md ?? ""}
-      </p>
+    <main>
+      <Container className="py-12">
+        <Eyebrow>Owner</Eyebrow>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink-900">
+          {b("passport.heading")?.title ?? "Safety Passport"}
+          <InfoButton topicId="passport.timeline" />
+        </h1>
+        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+          {b("passport.explainer")?.body_md ?? ""}
+        </p>
 
-      <div className="mt-6 grid gap-5 md:grid-cols-2">
-        {products.map((p) => {
-          const active = p.directives.filter((d) => covers(p.instance.serial, d));
-          const recalled = active.length > 0;
-          const owner = p.instance.current_owner_id
-            ? `Owner #${p.instance.current_owner_id.slice(-4)}`
-            : "Unowned";
-          return (
-            <div key={p.instance.id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              <div
-                className={`px-5 py-4 ${
-                  recalled ? "bg-red-50" : "bg-emerald-50"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                      {p.instance.category} · serial {p.instance.serial}
-                    </div>
-                    <div className="mt-0.5 font-semibold text-slate-900">
-                      {p.instance.manufacturer_name} {p.instance.model_name}
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
+          {products.map((p) => {
+            const active = p.directives.filter((d) => covers(p.instance.serial, d));
+            const recalled = active.length > 0;
+            const owner = p.instance.current_owner_id
+              ? `Owner #${p.instance.current_owner_id.slice(-4)}`
+              : "Unowned";
+            return (
+              <Card key={p.instance.id} className="overflow-hidden p-0" interactive>
+                <div className={`flex items-center justify-between px-6 py-5 ${recalled ? "bg-red-50/80" : "bg-brand-50/80"}`}>
+                  <div className="flex items-center gap-3.5">
+                    <span className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl text-white shadow-soft ${recalled ? "bg-red-600" : "bg-brand-600"}`}>
+                      {recalled ? <AlertTriangle className="h-5 w-5" /> : <ShieldCheck className="h-5 w-5" />}
+                    </span>
+                    <div>
+                      <div className="text-[11px] font-medium uppercase tracking-wide text-ink-500">
+                        {p.instance.category} · <span className="font-mono">serial {p.instance.serial}</span>
+                      </div>
+                      <div className="mt-0.5 font-semibold text-ink-900">
+                        {p.instance.manufacturer_name} {p.instance.model_name}
+                      </div>
                     </div>
                   </div>
-                  <span
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      recalled ? "bg-red-600 text-white" : "bg-emerald-600 text-white"
-                    }`}
-                  >
-                    {recalled ? "RECALLED" : "SAFE"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="px-5 py-4">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">Current owner</span>
-                  <span className="font-medium text-slate-800">{owner}</span>
+                  <Badge tone={recalled ? "red" : "brand"}>{recalled ? "RECALLED" : "SAFE"}</Badge>
                 </div>
 
-                {recalled && p.instance.current_owner_id && (
-                  <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-                    <b>Safety alert sent to {owner}.</b>
-                    {active[0].remedy ? ` Remedy: ${active[0].remedy}` : ""}
-                    <div className="mt-1 text-xs text-amber-700">
-                      The manufacturer reached the current owner — not just the original buyer.
-                    </div>
+                <div className="p-6">
+                  <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3.5 py-2.5 text-sm">
+                    <span className="inline-flex items-center gap-2 text-ink-500">
+                      <User className="h-4 w-4" /> Current owner
+                    </span>
+                    <span className="font-medium text-ink-900">{owner}</span>
                   </div>
-                )}
 
-                <div className="mt-4">
-                  <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                    Safety record
-                  </div>
-                  {p.directives.length === 0 ? (
-                    <p className="mt-2 text-sm text-emerald-700">
-                      ✓ Clear record — no safety directives on this product.
-                    </p>
-                  ) : (
-                    <ol className="mt-2 space-y-2 border-l-2 border-slate-100 pl-4">
-                      {p.directives.map((d, i) => (
-                        <li key={i} className="relative">
-                          <span className="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-red-500" />
-                          <div className="text-sm font-medium text-slate-800">
-                            {d.kind}
-                            {d.source ? ` · ${d.source}` : ""}
-                          </div>
-                          {d.hazard && <div className="text-xs text-slate-600">{d.hazard}</div>}
-                          {d.remedy && <div className="text-xs text-slate-500">Remedy: {d.remedy}</div>}
-                        </li>
-                      ))}
-                    </ol>
+                  {recalled && p.instance.current_owner_id && (
+                    <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-sm text-amber-900 animate-fade-up">
+                      <BellRing className="mt-0.5 h-4 w-4 shrink-0" />
+                      <span>
+                        <b>Safety alert sent to {owner}.</b>
+                        {active[0].remedy ? ` Remedy: ${active[0].remedy}` : ""}
+                        <span className="mt-1 block text-xs text-amber-700">
+                          The manufacturer reached the <i>current</i> owner — not just the original buyer.
+                        </span>
+                      </span>
+                    </div>
                   )}
+
+                  <div className="mt-5">
+                    <div className="text-xs font-semibold uppercase tracking-wide text-ink-500">Safety record</div>
+                    {p.directives.length === 0 ? (
+                      <p className="mt-2 inline-flex items-center gap-1.5 text-sm text-brand-700">
+                        <ShieldCheck className="h-4 w-4" /> Clear record — no safety directives.
+                      </p>
+                    ) : (
+                      <ol className="mt-3 space-y-3 border-l-2 border-slate-100 pl-5">
+                        {p.directives.map((d, i) => (
+                          <li key={i} className="relative">
+                            <span className="absolute -left-[27px] top-1 h-3 w-3 rounded-full border-2 border-white bg-red-500 shadow-sm" />
+                            <div className="text-sm font-medium text-ink-900">
+                              {d.kind}{d.source ? ` · ${d.source}` : ""}
+                            </div>
+                            {d.hazard && <div className="text-xs text-ink-500">{d.hazard}</div>}
+                            {d.remedy && <div className="text-xs text-ink-500">Remedy: {d.remedy}</div>}
+                          </li>
+                        ))}
+                      </ol>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+              </Card>
+            );
+          })}
+          {products.length === 0 && (
+            <Card className="flex h-48 items-center justify-center text-ink-500">
+              <Baby className="mr-2 h-5 w-5" /> Loading products…
+            </Card>
+          )}
+        </div>
+      </Container>
     </main>
   );
 }

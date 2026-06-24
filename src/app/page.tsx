@@ -2,17 +2,21 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import {
+  ShieldCheck,
+  Ban,
+  CheckCircle2,
+  Megaphone,
+  ArrowRight,
+  Radio,
+  ScanLine,
+  Building2,
+} from "lucide-react";
 import { apiGet } from "@/lib/client/api";
+import { Badge, Button, Card, Container, Eyebrow } from "@/components/ui";
 import { InfoButton } from "@/components/InfoButton";
 
-interface Block {
-  key: string;
-  title: string | null;
-  body_md: string | null;
-}
-interface ContentResp {
-  blocks: Block[];
-}
+interface Block { key: string; title: string | null; body_md: string | null }
 interface Stats {
   protected_units: string;
   blocks_issued: string;
@@ -25,9 +29,7 @@ export default function Home() {
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    apiGet<ContentResp>("/api/content/home")
-      .then((d) => setBlocks(d.blocks))
-      .catch(() => {});
+    apiGet<{ blocks: Block[] }>("/api/content/home").then((d) => setBlocks(d.blocks)).catch(() => {});
     apiGet<Stats>("/api/stats").then(setStats).catch(() => {});
   }, []);
 
@@ -37,67 +39,188 @@ export default function Home() {
   const why = b("home.why");
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-12">
-      <section className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <p className="text-sm font-medium text-emerald-700">
-          Built on Amazon Aurora DSQL
-          <InfoButton topicId="dsql.consistency" />
-        </p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight text-slate-900">
-          {hero?.title ?? "Recalls, made executable."}
-        </h1>
-        <p className="mt-4 max-w-2xl whitespace-pre-line text-lg text-slate-600">
-          {hero?.body_md ?? ""}
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/gate"
-            className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
-          >
-            See the Marketplace Gate →
-          </Link>
-          <Link
-            href="/console"
-            className="rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-          >
-            Open the Manufacturer Console
-          </Link>
+    <main>
+      {/* Hero */}
+      <Container className="pt-16 pb-10">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="animate-fade-up">
+            <Badge tone="brand">
+              <ShieldCheck className="h-3.5 w-3.5" /> Built on Amazon Aurora DSQL
+              <InfoButton topicId="dsql.consistency" />
+            </Badge>
+            <h1 className="mt-5 text-5xl font-semibold leading-[1.05] tracking-tight text-ink-900 sm:text-6xl">
+              {hero?.title ?? "Recalls, made executable."}
+            </h1>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-500">
+              {hero?.body_md ??
+                "A recall is just information until something acts on it."}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/gate">
+                <Button size="lg">
+                  See the Marketplace Gate <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/console">
+                <Button size="lg" variant="secondary">
+                  Open the Console
+                </Button>
+              </Link>
+            </div>
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-500">
+              <span className="inline-flex items-center gap-1.5">
+                <Radio className="h-4 w-4 text-brand-600" /> Multi-region active-active
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-brand-600" /> Strong consistency
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <ScanLine className="h-4 w-4 text-brand-600" /> Real CPSC data
+              </span>
+            </div>
+          </div>
+
+          <HeroVisual />
         </div>
-      </section>
+      </Container>
 
-      {stats && (
-        <section className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <Stat label="Units protected" value={stats.protected_units} />
-          <Stat label="Sales blocked" value={stats.blocks_issued} />
-          <Stat label="Transfers cleared" value={stats.transfers_completed} />
-          <Stat label="Directives issued" value={stats.directives_issued} />
-        </section>
-      )}
+      {/* Stats */}
+      <Container className="py-8">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <Stat icon={<ShieldCheck className="h-5 w-5" />} label="Units protected" value={stats?.protected_units} tone="brand" />
+          <Stat icon={<Ban className="h-5 w-5" />} label="Sales blocked" value={stats?.blocks_issued} tone="red" />
+          <Stat icon={<CheckCircle2 className="h-5 w-5" />} label="Transfers cleared" value={stats?.transfers_completed} tone="brand" />
+          <Stat icon={<Megaphone className="h-5 w-5" />} label="Directives issued" value={stats?.directives_issued} tone="sky" />
+        </div>
+      </Container>
 
-      <section className="mt-6 grid gap-4 md:grid-cols-2">
-        <Card title={how?.title} body={how?.body_md} />
-        <Card title={why?.title} body={why?.body_md} />
-      </section>
+      {/* How / Why */}
+      <Container className="py-8">
+        <div className="grid gap-5 md:grid-cols-3">
+          <Card className="p-7 md:col-span-2">
+            <Eyebrow>How it works</Eyebrow>
+            <h2 className="mt-2 text-xl font-semibold text-ink-900">{how?.title}</h2>
+            <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-ink-500">
+              {how?.body_md}
+            </p>
+          </Card>
+          <Card className="flex flex-col justify-between p-7" interactive>
+            <div>
+              <Eyebrow>Why it matters</Eyebrow>
+              <h2 className="mt-2 text-xl font-semibold text-ink-900">{why?.title}</h2>
+              <p className="mt-3 text-[15px] leading-relaxed text-ink-500">{why?.body_md}</p>
+            </div>
+            <Link href="/live" className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:gap-2.5 transition-all">
+              See the consistency proof <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Card>
+        </div>
+      </Container>
+
+      {/* Personas */}
+      <Container className="py-8 pb-16">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Persona icon={<Building2 className="h-5 w-5" />} title="Marketplaces" body="Check safety at listing and checkout. Block recalled units automatically." href="/gate" cta="Marketplace Gate" />
+          <Persona icon={<Megaphone className="h-5 w-5" />} title="Manufacturers" body="Issue precise recalls by serial range and reach current owners." href="/console" cta="Manufacturer Console" />
+          <Persona icon={<ScanLine className="h-5 w-5" />} title="Owners" body="A safety passport that follows the product through every resale." href="/passport" cta="Safety Passport" />
+        </div>
+      </Container>
     </main>
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function HeroVisual() {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
-      <div className="text-2xl font-bold text-slate-900">{value}</div>
-      <div className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-500">
-        {label}
-      </div>
+    <div className="relative animate-fade-up [animation-delay:120ms]">
+      <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-brand-100/60 via-transparent to-sky-100/50 blur-2xl" />
+      <Card className="overflow-hidden p-0">
+        <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-ink-700">
+            <span className="h-2.5 w-2.5 rounded-full bg-red-500" />
+            Checkout · DreamNest Bassinet
+          </div>
+          <span className="font-mono text-xs text-ink-500">serial 100</span>
+        </div>
+        <div className="space-y-4 p-6">
+          <div className="animate-stamp rounded-2xl border border-red-200 bg-red-50 p-5">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-white">
+                <Ban className="h-5 w-5" />
+              </span>
+              <div>
+                <div className="text-base font-bold text-red-800">BLOCKED — Unsafe for resale</div>
+                <div className="text-sm text-ink-500">Active recall · source CPSC</div>
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2 text-xs">
+            {["Hazard", "Remedy", "Source"].map((k) => (
+              <div key={k} className="rounded-lg border border-slate-100 bg-slate-50/60 p-2.5">
+                <div className="font-semibold uppercase tracking-wide text-ink-500">{k}</div>
+                <div className="mt-1 text-ink-700">
+                  {k === "Hazard" ? "Side rail detaches" : k === "Remedy" ? "Full refund" : "CPSC"}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-between rounded-xl bg-ink-900 px-4 py-3 text-sm text-white">
+            <span className="inline-flex items-center gap-2">
+              <Radio className="h-4 w-4 text-brand-400" /> us-east-1 ⇄ us-east-2
+            </span>
+            <span className="font-mono text-xs text-white/70">strongly consistent</span>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
 
-function Card({ title, body }: { title?: string | null; body?: string | null }) {
+function Stat({
+  icon,
+  label,
+  value,
+  tone,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string | undefined;
+  tone: "brand" | "red" | "sky";
+}) {
+  const toneCls = { brand: "text-brand-600 bg-brand-50", red: "text-red-600 bg-red-50", sky: "text-sky-600 bg-sky-50" }[tone];
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6">
-      <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-      <p className="mt-2 whitespace-pre-line text-sm text-slate-600">{body}</p>
-    </div>
+    <Card className="p-5" interactive>
+      <span className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ${toneCls}`}>{icon}</span>
+      <div className="mt-3 text-3xl font-semibold tracking-tight text-ink-900 tabular-nums">
+        {value ?? "—"}
+      </div>
+      <div className="mt-0.5 text-sm text-ink-500">{label}</div>
+    </Card>
+  );
+}
+
+function Persona({
+  icon,
+  title,
+  body,
+  href,
+  cta,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+  href: string;
+  cta: string;
+}) {
+  return (
+    <Card className="flex flex-col p-6" interactive>
+      <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-ink-700">
+        {icon}
+      </span>
+      <h3 className="mt-4 font-semibold text-ink-900">{title}</h3>
+      <p className="mt-1.5 flex-1 text-sm leading-relaxed text-ink-500">{body}</p>
+      <Link href={href} className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 transition-all hover:gap-2.5">
+        {cta} <ArrowRight className="h-4 w-4" />
+      </Link>
+    </Card>
   );
 }

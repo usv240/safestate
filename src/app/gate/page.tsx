@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Ban, CheckCircle2, RotateCcw, Baby, Loader2 } from "lucide-react";
 import { apiGet, apiPost } from "@/lib/client/api";
+import { Badge, Button, Card, Container, Eyebrow } from "@/components/ui";
 import { InfoButton } from "@/components/InfoButton";
 
 interface Block { key: string; title: string | null; body_md: string | null }
@@ -74,66 +76,66 @@ export default function GatePage() {
   }
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            {b("gate.heading")?.title ?? "Marketplace Safety Gate"}
-            <InfoButton topicId="gate.checkout" />
-          </h1>
-          <p className="mt-1 max-w-2xl text-sm text-slate-600">
-            {b("gate.explainer")?.body_md ?? ""}
-          </p>
+    <main>
+      <Container className="py-12">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="max-w-2xl">
+            <Eyebrow>Marketplace</Eyebrow>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink-900">
+              {b("gate.heading")?.title ?? "Marketplace Safety Gate"}
+              <InfoButton topicId="gate.checkout" />
+            </h1>
+            <p className="mt-2 text-[15px] leading-relaxed text-ink-500">
+              {b("gate.explainer")?.body_md ?? ""}
+            </p>
+          </div>
+          <Button variant="secondary" size="sm" onClick={reset}>
+            <RotateCcw className="h-4 w-4" /> Reset demo
+          </Button>
         </div>
-        <button
-          onClick={reset}
-          className="shrink-0 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
-        >
-          Reset demo
-        </button>
-      </div>
 
-      {verdict && <VerdictBanner v={verdict} />}
+        {verdict && <VerdictBanner v={verdict} />}
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2">
-        {listings.map((l) => {
-          const recalled = l.guardStatus !== "SAFE";
-          return (
-            <div key={l.instanceId} className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              <div className="flex h-32 items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 text-slate-400">
-                {l.category}
-              </div>
-              <div className="p-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-slate-900">{l.title}</h3>
-                  <span className="text-sm font-semibold text-slate-900">{l.priceLabel}</span>
-                </div>
-                <p className="mt-0.5 text-xs text-slate-500">
-                  {l.condition} · serial {l.serial}
-                </p>
-                <div className="mt-2">
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                      recalled
-                        ? "bg-red-50 text-red-700"
-                        : "bg-emerald-50 text-emerald-700"
-                    }`}
-                  >
-                    {recalled ? `● ${l.guardStatus}` : "● model status: SAFE"}
+        <div className="mt-8 grid gap-5 sm:grid-cols-2">
+          {listings.map((l) => {
+            const recalled = l.guardStatus !== "SAFE";
+            return (
+              <Card key={l.instanceId} className="overflow-hidden p-0" interactive>
+                <div className="relative flex h-36 items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200/70">
+                  <Baby className="h-12 w-12 text-slate-400" strokeWidth={1.25} />
+                  <span className="absolute right-3 top-3">
+                    <Badge tone={recalled ? "red" : "brand"}>
+                      <span className={`h-1.5 w-1.5 rounded-full ${recalled ? "bg-red-500" : "bg-brand-500"}`} />
+                      {recalled ? l.guardStatus : "model: SAFE"}
+                    </Badge>
                   </span>
                 </div>
-                <button
-                  onClick={() => buy(l)}
-                  disabled={busy === l.instanceId}
-                  className="mt-4 w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
-                >
-                  {busy === l.instanceId ? "Checking safety…" : "Buy now"}
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+                <div className="p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="font-semibold text-ink-900">{l.title}</h3>
+                    <span className="shrink-0 text-lg font-semibold text-ink-900">{l.priceLabel}</span>
+                  </div>
+                  <p className="mt-1 text-sm text-ink-500">
+                    {l.condition} · <span className="font-mono text-xs">serial {l.serial}</span>
+                  </p>
+                  <Button
+                    className="mt-4 w-full"
+                    variant={recalled ? "secondary" : "primary"}
+                    onClick={() => buy(l)}
+                    disabled={busy === l.instanceId}
+                  >
+                    {busy === l.instanceId ? (
+                      <><Loader2 className="h-4 w-4 animate-spin" /> Checking safety…</>
+                    ) : (
+                      "Buy now"
+                    )}
+                  </Button>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      </Container>
     </main>
   );
 }
@@ -142,44 +144,45 @@ function VerdictBanner({ v }: { v: Verdict & { title: string } }) {
   const blocked = v.decision === "BLOCKED";
   return (
     <div
-      className={`mt-6 rounded-2xl border p-5 ${
-        blocked ? "border-red-200 bg-red-50" : "border-emerald-200 bg-emerald-50"
+      key={v.title + v.decision + v.attempts}
+      className={`mt-8 animate-stamp overflow-hidden rounded-xl2 border shadow-soft ${
+        blocked ? "border-red-200 bg-red-50/70" : "border-brand-200 bg-brand-50/70"
       }`}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4 p-6">
         <span
-          className={`inline-flex h-9 w-9 items-center justify-center rounded-full text-lg font-bold text-white ${
-            blocked ? "bg-red-600" : "bg-emerald-600"
+          className={`inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-white shadow-soft ${
+            blocked ? "bg-red-600" : "bg-brand-600"
           }`}
         >
-          {blocked ? "✕" : "✓"}
+          {blocked ? <Ban className="h-6 w-6" /> : <CheckCircle2 className="h-6 w-6" />}
         </span>
         <div>
-          <div className={`text-lg font-bold ${blocked ? "text-red-800" : "text-emerald-800"}`}>
+          <div className={`text-xl font-bold ${blocked ? "text-red-800" : "text-brand-800"}`}>
             {blocked ? "BLOCKED — Unsafe for resale" : "AUTHORIZED — Safe to transfer"}
           </div>
-          <div className="text-sm text-slate-600">{v.title}</div>
+          <div className="text-sm text-ink-500">{v.title}</div>
         </div>
       </div>
       {blocked && (v.reason || v.remedy || v.source) && (
-        <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-3">
+        <div className="grid gap-px bg-red-100 sm:grid-cols-3">
           {v.reason && <Field label="Hazard" value={v.reason} />}
           {v.remedy && <Field label="Remedy" value={v.remedy} />}
           {v.source && <Field label="Source" value={v.source} />}
-        </dl>
+        </div>
       )}
-      <p className="mt-3 text-xs text-slate-500">
+      <div className="border-t border-slate-200/60 bg-white/60 px-6 py-2.5 text-xs text-ink-500">
         Decision committed via Aurora DSQL · transaction attempts: {v.attempts}
-      </p>
+      </div>
     </div>
   );
 }
 
 function Field({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-3">
-      <dt className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{label}</dt>
-      <dd className="mt-0.5 text-slate-800">{value}</dd>
+    <div className="bg-white/80 p-4">
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-ink-500">{label}</div>
+      <div className="mt-1 text-sm text-ink-900">{value}</div>
     </div>
   );
 }

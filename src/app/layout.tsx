@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
+import { PageBack } from "@/components/PageBack";
 import { Footer } from "@/components/Footer";
 
 const description =
@@ -32,8 +33,9 @@ export const metadata: Metadata = {
   },
 };
 
-// Runs before paint to avoid a light→dark flash.
-const themeScript = `(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark');}catch(e){}})();`;
+// Light by default; only switch to dark if the user explicitly chose it.
+// Runs before paint to avoid a flash.
+const themeScript = `(function(){try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -47,6 +49,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <Nav />
+        <PageBack />
         <div className="flex-1">{children}</div>
         <Footer />
         <Analytics />

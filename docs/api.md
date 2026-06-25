@@ -50,6 +50,22 @@ curl -s https://safestate.vercel.app/api/scan \
 
 Returns a small illustrative catalog (`{ "items": [...] }`) you can feed straight into `POST /api/scan`. Built server-side from the live demo model.
 
+## GET /api/verify
+
+A public, read-only check for a single unit. No state is mutated, so it is safe to drive from a shared link or a QR code. It returns the same verdict the gate would, from live multi-region state. This powers the consumer-facing "Safe Handoff" page.
+
+```bash
+curl -s 'https://safestate.vercel.app/api/verify?model=DreamNest%20Bassinet&serial=100'
+```
+
+```json
+{ "model": "DreamNest Bassinet", "serial": "100", "status": "BLOCKED",
+  "hazard": "…", "remedy": "…", "source": "CPSC", "kind": "RECALL",
+  "checkedAt": "2026-06-25T00:00:00.000Z" }
+```
+
+`/verify?model=…&serial=…` on the site renders this verdict, an action plan, and a shareable link plus QR, so the recall warning travels with the item to the next owner.
+
 ## POST /api/authorize-transfer
 
 The transactional gate for a single sale. This runs the full Aurora DSQL transaction that records the transfer and writes the model's guard row, so a concurrent recall is forced to conflict. In production a marketplace maps its SKU to a SafeState instance id; in the demo, instance ids come from the seeded fixtures.

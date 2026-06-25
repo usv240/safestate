@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { scanCatalog } from "@/lib/safety/scan";
+import { recordEvent } from "@/lib/events/dynamo";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,7 @@ export async function GET(request: NextRequest) {
   try {
     const report = await scanCatalog([{ model, serial }]);
     const r = report.results[0];
+    await recordEvent("verify", serial ? `${model} #${serial}` : model);
     return Response.json({ ...r, checkedAt: new Date().toISOString() });
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 500 });

@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { searchRecalls } from "@/lib/cpsc/search";
+import { recordEvent } from "@/lib/events/dynamo";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -10,6 +11,7 @@ export async function GET(request: NextRequest) {
   if (q.length > 120) return Response.json({ error: "query too long" }, { status: 400 });
   try {
     const { hits, source } = await searchRecalls(q);
+    await recordEvent("check", q);
     return Response.json({ query: q, source, count: hits.length, hits });
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 500 });

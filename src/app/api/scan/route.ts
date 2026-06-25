@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { scanCatalog } from "@/lib/safety/scan";
+import { recordEvent } from "@/lib/events/dynamo";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,7 @@ export async function POST(request: NextRequest) {
       sku: i.sku ?? null,
     }));
     const report = await scanCatalog(items);
+    await recordEvent("scan", `${report.summary.total} units, ${report.summary.blocked} recalled`);
     return Response.json(report);
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 500 });

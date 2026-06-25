@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { issueDirective } from "@/lib/safety/issueDirective";
+import { recordEvent } from "@/lib/events/dynamo";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +36,7 @@ export async function POST(request: NextRequest) {
   }
   try {
     const result = await issueDirective(parsed.data);
+    await recordEvent("recall", `${parsed.data.kind} issued (${parsed.data.target.scope})`);
     return Response.json(result);
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 500 });

@@ -31,11 +31,13 @@ flowchart LR
 
   CPSC["CPSC Recall API"]
   Claude["Claude"]
+  DDB["Amazon DynamoDB (activity firehose)"]
 
   Users --> UI --> API
   API -->|"IAM token, Postgres"| A
   API -->|"IAM token, Postgres"| B
   A <-->|"active-active, strong consistency"| B
+  API -->|"append-only events"| DDB
   Cron --> CPSC
   Cron --> API
   API -->|"match listings"| Claude
@@ -53,10 +55,15 @@ DSQL was chosen over Aurora PostgreSQL and DynamoDB deliberately, because it is 
 
 A marketplace can check a single sale at the gate, or scan its entire catalog for recall exposure in one call. The integration surface is documented in [docs/api.md](docs/api.md).
 
+## Two databases, on purpose
+
+Aurora DSQL is the primary database and owns every transactional safety decision. DynamoDB owns the high-volume, append-only activity firehose (checks, verifies, scans, decisions) and the live counters, a workload that does not need a distributed transaction. Right tool per workload. See [ADR-0008](docs/adr/0008-dynamodb-activity-firehose.md).
+
 ## Tech stack
 
 - Next.js (App Router) on Vercel
-- Amazon Aurora DSQL, multi-region (us-east-1, us-east-2, witness us-west-2)
+- Amazon Aurora DSQL, multi-region (us-east-1, us-east-2, witness us-west-2) — transactional core
+- Amazon DynamoDB — append-only activity firehose and counters
 - node-postgres with IAM token auth (`@aws-sdk/dsql-signer`)
 - Vercel Cron for daily CPSC ingestion
 - Claude for listing-to-recall matching

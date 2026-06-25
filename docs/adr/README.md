@@ -11,3 +11,4 @@ These records capture the decisions that shaped SafeState and why they were made
 | [0005](0005-uuids-no-foreign-keys.md) | Use client-generated UUIDs and app-enforced relationships |
 | [0006](0006-ai-matching-with-review.md) | Match listings with AI, with a human review queue |
 | [0007](0007-why-dsql-over-alternatives.md) | Choose Aurora DSQL over Aurora PostgreSQL and DynamoDB |
+| [0008](0008-dynamodb-activity-firehose.md) | Add DynamoDB for the activity firehose (polyglot persistence) |

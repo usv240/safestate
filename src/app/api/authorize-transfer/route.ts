@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { authorizeTransfer } from "@/lib/safety/authorizeTransfer";
+import { recordEvent } from "@/lib/events/dynamo";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +29,7 @@ export async function POST(request: NextRequest) {
   }
   try {
     const result = await authorizeTransfer(parsed.data);
+    await recordEvent("authorize", result.decision === "BLOCKED" ? "sale blocked at gate" : "sale cleared at gate");
     return Response.json(result);
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 500 });

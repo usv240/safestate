@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Search, Loader2, Ban, CheckCircle2, ExternalLink } from "lucide-react";
 import { apiGet } from "@/lib/client/api";
@@ -29,6 +29,20 @@ export default function CheckPage() {
   const [resp, setResp] = useState<SearchResp | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [checks, setChecks] = useState<number | null>(null);
+
+  async function loadActivity() {
+    try {
+      const a = await apiGet<{ stats: { check: number; verify: number } }>("/api/activity");
+      setChecks(a.stats.check + a.stats.verify);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  useEffect(() => {
+    loadActivity();
+  }, []);
 
   async function search(term?: string) {
     const query = (term ?? q).trim();
@@ -39,6 +53,7 @@ export default function CheckPage() {
     try {
       const r = await apiGet<SearchResp>(`/api/recall-search?q=${encodeURIComponent(query)}`);
       setResp(r);
+      loadActivity();
     } catch (e) {
       setErr((e as Error).message);
     } finally {
@@ -89,6 +104,11 @@ export default function CheckPage() {
           ))}
         </div>
         {err && <p className="mt-4 text-sm text-red-700">{err}</p>}
+        {checks != null && checks > 0 && (
+          <p className="mt-4 text-xs text-muted">
+            <span className="font-semibold text-fg tabular-nums">{checks.toLocaleString()}</span> recall checks run on SafeState
+          </p>
+        )}
       </div>
 
       {resp && (

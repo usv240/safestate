@@ -7,7 +7,8 @@ SafeState is a Next.js app on Vercel with Amazon Aurora DSQL as the primary data
 - **UI** (Next.js, on Vercel): the Gate, Console, Passport, Live lab, Recalls feed, and Match pages.
 - **API routes** (Next.js route handlers, on Vercel): the safety decision, recall publishing, the bulk catalog scan, and data reads. They connect to DSQL over the Postgres protocol using short-lived IAM tokens.
 - **Daily Cron** (Vercel Cron): ingests real recalls from the public CPSC API once a day.
-- **Aurora DSQL**: a multi-region, active-active cluster in us-east-1 and us-east-2 with a witness in us-west-2.
+- **Aurora DSQL**: a multi-region, active-active cluster in us-east-1 and us-east-2 with a witness in us-west-2. Owns all transactional safety state.
+- **DynamoDB**: the append-only activity firehose (checks, verifies, scans, decisions) and live counters. A different workload that does not need a distributed transaction. See [ADR-0008](adr/0008-dynamodb-activity-firehose.md).
 - **Claude**: maps free-text secondhand listings to the right recall, with a confidence score.
 
 ## System diagram
@@ -29,15 +30,21 @@ flowchart LR
 
   CPSC["CPSC Recall API"]
   Claude["Claude"]
+  DDB["Amazon DynamoDB (activity firehose)"]
 
   Users --> UI --> API
   API -->|"IAM token, Postgres"| A
   API -->|"IAM token, Postgres"| B
   A <-->|"active-active, strong consistency"| B
+  API -->|"append-only events"| DDB
   Cron --> CPSC
   Cron --> API
   API -->|"match listings"| Claude
 ```
+
+## Two databases, on purpose
+
+Aurora DSQL is the primary database and owns every transactional safety decision, where strong cross-region consistency is the product. DynamoDB owns the high-volume, append-only activity stream (checks, verifies, scans, decisions), which is write-heavy and does not need a distributed transaction. Each workload sits on the database that fits it. See [ADR-0008](adr/0008-dynamodb-activity-firehose.md).
 
 ## The safety decision
 

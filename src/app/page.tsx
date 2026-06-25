@@ -29,14 +29,20 @@ interface Stats {
   transfers_completed: string;
   directives_issued: string;
 }
+interface Impact {
+  recallsTracked: number;
+  checksRun: number;
+}
 
 export default function Home() {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
+  const [impact, setImpact] = useState<Impact | null>(null);
 
   useEffect(() => {
     apiGet<{ blocks: Block[] }>("/api/content/home").then((d) => setBlocks(d.blocks)).catch(() => {});
     apiGet<Stats>("/api/stats").then(setStats).catch(() => {});
+    apiGet<Impact>("/api/impact").then(setImpact).catch(() => {});
   }, []);
 
   const b = (k: string) => blocks.find((x) => x.key === k);
@@ -62,11 +68,11 @@ export default function Home() {
                 "A recall is just information until something acts on it."}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/gate" className={buttonClass("primary", "lg")}>
-                See the Marketplace Gate <ArrowRight className="h-4 w-4" />
+              <Link href="/tour" className={buttonClass("primary", "lg")}>
+                Take the 90-second tour <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link href="/console" className={buttonClass("secondary", "lg")}>
-                Open the Console
+              <Link href="/gate" className={buttonClass("secondary", "lg")}>
+                See the Gate
               </Link>
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted">
@@ -105,6 +111,12 @@ export default function Home() {
             <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-muted">
               Check any product, food, drug, or vehicle against the live CPSC, FDA, and NHTSA recall databases at once. Free, no account.
             </p>
+            {impact && (
+              <p className="mt-3 text-xs text-muted">
+                <b className="text-fg">3</b> federal sources · <b className="text-fg">2</b> AWS databases ·{" "}
+                <b className="text-fg tabular-nums">{impact.checksRun.toLocaleString()}</b> recall checks run
+              </p>
+            )}
           </div>
           <Link href="/check" className={buttonClass("primary", "lg", "shrink-0")}>
             Check any product <ArrowRight className="h-4 w-4" />

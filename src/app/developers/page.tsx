@@ -30,6 +30,11 @@ const directiveReq = `POST /api/directives
   "target": { "scope": "SERIAL_RANGE", "rangeLo": "1", "rangeHi": "999" }
 }`;
 
+const embedSnippet = `<iframe
+  src="https://safestate.vercel.app/api/embed/verify?model=DreamNest+Bassinet&serial=100"
+  width="380" height="84" style="border:none">
+</iframe>`;
+
 export default function Developers() {
   return (
     <main>
@@ -75,6 +80,36 @@ export default function Developers() {
             </Card>
           </div>
         </div>
+
+        <Card className="mt-6 overflow-hidden p-0">
+          <Header icon={<Code2 className="h-4 w-4" />} title="Embed a live verdict badge" tone="brand" />
+          <div className="p-6">
+            <p className="text-sm leading-relaxed text-muted">
+              One iframe drops a live recall verdict onto any listing page. It reads the same source as the gate, so a
+              buyer sees the real answer, not a screenshot. No SDK, no build step.
+            </p>
+            <div className="mt-4">
+              <CodeBlock>{embedSnippet}</CodeBlock>
+            </div>
+            <div className="mt-5 text-xs font-medium uppercase tracking-wide text-muted">Live preview</div>
+            <div className="mt-2 flex flex-wrap gap-4">
+              <iframe
+                src="/api/embed/verify?model=DreamNest%20Bassinet&serial=100"
+                width={380}
+                height={84}
+                style={{ border: "none" }}
+                title="Recalled unit badge"
+              />
+              <iframe
+                src="/api/embed/verify?model=DreamNest%20Bassinet&serial=5000"
+                width={380}
+                height={84}
+                style={{ border: "none" }}
+                title="Safe unit badge"
+              />
+            </div>
+          </div>
+        </Card>
 
         <Card className="mt-6 flex flex-wrap items-center justify-between gap-3 p-6">
           <p className="text-sm text-fg2">

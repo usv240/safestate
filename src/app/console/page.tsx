@@ -5,6 +5,7 @@ import { Megaphone, Send, Wand2, AlertTriangle, CheckCircle2, Loader2 } from "lu
 import { apiGet, apiPost } from "@/lib/client/api";
 import { Badge, Button, Card, Container, Eyebrow } from "@/components/ui";
 import { InfoButton } from "@/components/InfoButton";
+import { GuidedTour } from "@/components/GuidedTour";
 
 interface Block { key: string; title: string | null; body_md: string | null }
 interface Directive { kind: string; hazard: string | null; remedy: string | null; source: string | null }
@@ -85,6 +86,7 @@ export default function ConsolePage() {
 
   return (
     <main>
+      <GuidedTour surface="console" />
       <Container className="py-12">
         <Eyebrow>Manufacturer · Safety operations</Eyebrow>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-fg">

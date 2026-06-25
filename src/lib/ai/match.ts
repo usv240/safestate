@@ -28,7 +28,7 @@ async function loadCandidates(): Promise<Candidate[]> {
   return r.rows as Candidate[];
 }
 
-function decide(confidence: number): Decision {
+export function decide(confidence: number): Decision {
   if (confidence >= 0.75) return "MATCH";
   if (confidence >= 0.4) return "REVIEW";
   return "CLEAR";

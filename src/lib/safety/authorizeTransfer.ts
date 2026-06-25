@@ -33,7 +33,7 @@ interface DirectiveRow {
 }
 
 /** Does a directive target cover this specific instance's serial? */
-function serialCovered(serial: string | null, row: DirectiveRow): boolean {
+export function serialCovered(serial: string | null, row: DirectiveRow): boolean {
   if (row.scope === "MODEL" || row.scope === "LOT") return true;
   if (serial == null) return false;
   if (row.scope === "UNIT") return row.range_lo != null && serial === row.range_lo;

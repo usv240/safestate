@@ -19,6 +19,9 @@ export function Footer() {
           <Link href="/recalls" className="hover:text-fg">
             Recalls
           </Link>
+          <Link href="/match" className="hover:text-fg">
+            AI Match
+          </Link>
           <Link href="/live" className="hover:text-fg">
             Live Consistency
           </Link>

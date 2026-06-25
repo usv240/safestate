@@ -90,6 +90,22 @@ export default function Home() {
         </div>
       </Container>
 
+      {/* Universal check — for everyone */}
+      <Container className="py-8">
+        <Card className="flex flex-col items-center gap-5 p-8 text-center sm:flex-row sm:justify-between sm:text-left" interactive>
+          <div>
+            <Eyebrow>For everyone</Eyebrow>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-fg">Is a product in your home recalled?</h2>
+            <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-muted">
+              Check any product, new or secondhand, against the live U.S. CPSC recall database. Every category, free, no account.
+            </p>
+          </div>
+          <Link href="/check" className={buttonClass("primary", "lg", "shrink-0")}>
+            Check any product <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Card>
+      </Container>
+
       {/* How / Why */}
       <Container className="py-8">
         <div className="grid gap-5 md:grid-cols-3">
@@ -115,7 +131,8 @@ export default function Home() {
 
       {/* Personas */}
       <Container className="py-8 pb-16">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Persona icon={<ShieldCheck className="h-5 w-5" />} title="Anyone" body="Check any product for a recall, then share a verdict that travels with the item." href="/verify" cta="Safe Handoff" />
           <Persona icon={<Building2 className="h-5 w-5" />} title="Marketplaces" body="Check safety at listing and checkout. Block recalled units automatically." href="/gate" cta="Marketplace Gate" />
           <Persona icon={<Megaphone className="h-5 w-5" />} title="Manufacturers" body="Issue precise recalls by serial range and reach current owners." href="/console" cta="Manufacturer Console" />
           <Persona icon={<ScanLine className="h-5 w-5" />} title="Owners" body="A safety passport that follows the product through every resale." href="/passport" cta="Safety Passport" />

@@ -15,8 +15,6 @@ const links = [
   { href: "/console", label: "Console" },
   { href: "/passport", label: "Passport" },
   { href: "/live", label: "Live" },
-  { href: "/recalls", label: "Recalls" },
-  { href: "/match", label: "Match" },
 ];
 
 export function Nav() {

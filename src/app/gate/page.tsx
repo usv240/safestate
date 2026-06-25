@@ -1,14 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Ban, CheckCircle2, RotateCcw, Baby, Loader2 } from "lucide-react";
+import { Ban, CheckCircle2, RotateCcw, Baby, Loader2, AlertTriangle } from "lucide-react";
 import { apiGet, apiPost } from "@/lib/client/api";
 import { Badge, Button, Card, Container, Eyebrow } from "@/components/ui";
 import { InfoButton } from "@/components/InfoButton";
 import { GuidedTour } from "@/components/GuidedTour";
 
 interface Block { key: string; title: string | null; body_md: string | null }
-interface Directive { kind: string; hazard: string | null; remedy: string | null; source: string | null }
+interface Directive { kind: string; hazard: string | null; remedy: string | null; source: string | null; scope?: string; range_lo?: string | null; range_hi?: string | null }
 interface Listing {
   instanceId: string;
   title: string;
@@ -50,6 +50,14 @@ export default function GatePage() {
   }, [load]);
 
   const b = (k: string) => blocks.find((x) => x.key === k);
+
+  const recallRange = (() => {
+    for (const l of listings) {
+      const d = l.directives.find((x) => x.scope === "SERIAL_RANGE" && x.range_lo && x.range_hi);
+      if (d) return { lo: d.range_lo as string, hi: d.range_hi as string };
+    }
+    return null;
+  })();
 
   async function buy(listing: Listing) {
     if (!buyerId) return;
@@ -95,6 +103,16 @@ export default function GatePage() {
             <RotateCcw className="h-4 w-4" /> Reset demo
           </Button>
         </div>
+
+        {recallRange && (
+          <div className="mt-6 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50/70 px-4 py-3 text-sm text-amber-900">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>
+              Active recall covers serials <b>{recallRange.lo}&ndash;{recallRange.hi}</b>. Units in this range are
+              blocked at checkout; units outside it still sell. Try buying both below.
+            </span>
+          </div>
+        )}
 
         {verdict && <VerdictBanner v={verdict} />}
 

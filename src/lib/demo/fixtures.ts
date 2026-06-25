@@ -31,4 +31,13 @@ export const DEMO = {
     { id: "aaaaaaa1-0000-0000-0000-000000000005", serial: "4200", owner: "70000000-0000-0000-0000-000000000004" },
     { id: "aaaaaaa1-0000-0000-0000-000000000006", serial: "7100", owner: "70000000-0000-0000-0000-000000000001" },
   ],
+
+  // Human-readable names for the reach-back demo so owners don't look synthetic.
+  ownerNames: {
+    "55555555-5555-5555-5555-555555555555": "Jordan Avery",
+    "70000000-0000-0000-0000-000000000001": "Maria Chen",
+    "70000000-0000-0000-0000-000000000002": "David Okafor",
+    "70000000-0000-0000-0000-000000000003": "Priya Nair",
+    "70000000-0000-0000-0000-000000000004": "Sam Rivera",
+  } as Record<string, string>,
 } as const;

@@ -7,7 +7,13 @@ import { Badge, Card } from "@/components/ui";
 
 interface Owner {
   ownerId: string;
+  name?: string;
   units: { serial: string | null }[];
+}
+
+function initials(o: Owner): string {
+  if (o.name) return o.name.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  return o.ownerId.slice(-2).toUpperCase();
 }
 interface ReachData {
   directiveKinds: string[];
@@ -62,10 +68,10 @@ export function ReachBack({ refreshKey }: { refreshKey?: number }) {
                 className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-surface p-3.5"
               >
                 <div className="flex items-center gap-2.5">
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-surface2 font-mono text-[11px] text-fg2">
-                    {o.ownerId.slice(-2).toUpperCase()}
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-surface2 text-[11px] font-semibold text-fg2">
+                    {initials(o)}
                   </span>
-                  <span className="text-sm font-medium text-fg">Owner {o.ownerId.slice(-6).toUpperCase()}</span>
+                  <span className="text-sm font-medium text-fg">{o.name ?? `Owner ${o.ownerId.slice(-6).toUpperCase()}`}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-muted">

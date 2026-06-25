@@ -63,9 +63,9 @@ export function ReachBack({ refreshKey }: { refreshKey?: number }) {
               >
                 <div className="flex items-center gap-2.5">
                   <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-surface2 font-mono text-[11px] text-fg2">
-                    {o.ownerId.slice(0, 2).toUpperCase()}
+                    {o.ownerId.slice(-2).toUpperCase()}
                   </span>
-                  <span className="text-sm font-medium text-fg">Owner {o.ownerId.slice(0, 8).toUpperCase()}</span>
+                  <span className="text-sm font-medium text-fg">Owner {o.ownerId.slice(-6).toUpperCase()}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-muted">

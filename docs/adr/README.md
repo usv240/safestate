@@ -10,3 +10,4 @@ These records capture the decisions that shaped SafeState and why they were made
 | [0004](0004-vercel-credential-naming.md) | Pass AWS credentials under custom names on Vercel |
 | [0005](0005-uuids-no-foreign-keys.md) | Use client-generated UUIDs and app-enforced relationships |
 | [0006](0006-ai-matching-with-review.md) | Match listings with AI, with a human review queue |
+| [0007](0007-why-dsql-over-alternatives.md) | Choose Aurora DSQL over Aurora PostgreSQL and DynamoDB |

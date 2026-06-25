@@ -5,7 +5,7 @@ SafeState is a Next.js app on Vercel with Amazon Aurora DSQL as the primary data
 ## Components
 
 - **UI** (Next.js, on Vercel): the Gate, Console, Passport, Live lab, Recalls feed, and Match pages.
-- **API routes** (Next.js route handlers, on Vercel): the safety decision, recall publishing, and data reads. They connect to DSQL over the Postgres protocol using short-lived IAM tokens.
+- **API routes** (Next.js route handlers, on Vercel): the safety decision, recall publishing, the bulk catalog scan, and data reads. They connect to DSQL over the Postgres protocol using short-lived IAM tokens.
 - **Daily Cron** (Vercel Cron): ingests real recalls from the public CPSC API once a day.
 - **Aurora DSQL**: a multi-region, active-active cluster in us-east-1 and us-east-2 with a witness in us-west-2.
 - **Claude**: maps free-text secondhand listings to the right recall, with a confidence score.
@@ -74,6 +74,16 @@ A recall and a sale naturally touch different rows, so without help they could b
 ## Multi-region
 
 The cluster is peered across us-east-1 and us-east-2, both active for reads and writes, with a witness in us-west-2 that holds the log for quorum but serves no application traffic. A recall written through one region's endpoint is immediately readable from the other. The Live lab page lets you run this yourself against the live cluster.
+
+## Data model
+
+The full schema lives in [db/migrations](../db/migrations): [001_init.sql](../db/migrations/001_init.sql) for the core tables and [002_cpsc.sql](../db/migrations/002_cpsc.sql) for the recall feed. The central tables:
+
+- `product_models`, `product_instances` - the catalog and individual units (with serials).
+- `safety_guard` - exactly one row per model, holding the safety status and epoch. This is the row both a recall and a sale write, which is what forces DSQL to detect their conflict.
+- `safety_directives` and `directive_targets` - a recall or repair order and the scope it covers (whole model, a lot, a serial range, or a single unit).
+- `ownership_transfers` and `transfer_attempts` - the record of each sale and an idempotency key per attempt.
+- `cpsc_recalls` - the real recall feed ingested from CPSC.
 
 ## Data, auth, and constraints
 

@@ -49,6 +49,10 @@ The whole product rests on one promise: the instant a recall is committed in any
 
 To make the guarantee hold under load, a recall and a sale of the same model are made to write the same guard row. DSQL uses optimistic concurrency, so the two transactions collide, one wins, and the loser retries on `SQLSTATE 40001`, reads the recalled state, and blocks the sale. A recalled unit never slips through. See [ADR-0002](docs/adr/0002-guard-row-conflict.md).
 
+DSQL was chosen over Aurora PostgreSQL and DynamoDB deliberately, because it is the only one of the three with multi-region, active-active strong consistency. The reasoning is in [ADR-0007](docs/adr/0007-why-dsql-over-alternatives.md).
+
+A marketplace can check a single sale at the gate, or scan its entire catalog for recall exposure in one call. The integration surface is documented in [docs/api.md](docs/api.md).
+
 ## Tech stack
 
 - Next.js (App Router) on Vercel
@@ -76,6 +80,7 @@ npm test
 ## Documentation
 
 - [docs/architecture.md](docs/architecture.md) covers how the pieces fit and the concurrency guarantee.
+- [docs/api.md](docs/api.md) is the integration surface: the catalog scan and the single-unit gate.
 - [docs/adr](docs/adr) records the key design decisions and why they were made.
 
 ---

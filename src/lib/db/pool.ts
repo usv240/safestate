@@ -33,7 +33,11 @@ function regionB(): string {
 
 function dsqlConfig(hostname: string, region: string): PoolConfig {
   const user = process.env.DSQL_USER || "admin";
-  const signer = new DsqlSigner({ hostname, region, credentials: explicitCreds() });
+  const creds = explicitCreds();
+  // Pass credentials only when we have them (Vercel/Lambda); otherwise let the
+  // default AWS provider chain resolve them (local `aws configure`). Passing
+  // `credentials: undefined` explicitly breaks the default chain.
+  const signer = new DsqlSigner(creds ? { hostname, region, credentials: creds } : { hostname, region });
   return {
     host: hostname,
     port: 5432,

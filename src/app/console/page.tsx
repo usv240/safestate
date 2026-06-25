@@ -6,6 +6,7 @@ import { apiGet, apiPost } from "@/lib/client/api";
 import { Badge, Button, Card, Container, Eyebrow } from "@/components/ui";
 import { InfoButton } from "@/components/InfoButton";
 import { GuidedTour } from "@/components/GuidedTour";
+import { ReachBack } from "@/components/ReachBack";
 
 interface Block { key: string; title: string | null; body_md: string | null }
 interface Directive { kind: string; hazard: string | null; remedy: string | null; source: string | null }
@@ -181,6 +182,8 @@ export default function ConsolePage() {
             )}
           </Card>
         </div>
+
+        <ReachBack refreshKey={result?.newEpoch} />
       </Container>
     </main>
   );

@@ -1,4 +1,5 @@
 import { getPool } from "./pool";
+import { serialCovered } from "../safety/authorizeTransfer";
 
 export interface DirectiveView {
   kind: string;
@@ -82,6 +83,53 @@ export async function getTutorial(surface: string) {
     [surface],
   );
   return r.rows as { step_order: number; anchor: string | null; title: string; body_md: string }[];
+}
+
+export interface AffectedOwner {
+  ownerId: string;
+  units: { serial: string | null }[];
+}
+
+/** Who needs to know: the current owners of units a model's active directives
+ *  cover. Walks live ownership, so it reaches whoever holds the unit now. */
+export async function getAffectedOwners(modelId: string): Promise<{
+  directiveKinds: string[];
+  totalUnits: number;
+  ownerCount: number;
+  owners: AffectedOwner[];
+}> {
+  const pool = getPool();
+  const dir = await pool.query(
+    `SELECT d.kind, t.scope, t.range_lo, t.range_hi
+       FROM safety_directives d
+       JOIN directive_targets t ON t.directive_id = d.id
+      WHERE d.model_id = $1`,
+    [modelId],
+  );
+  if (!dir.rowCount) return { directiveKinds: [], totalUnits: 0, ownerCount: 0, owners: [] };
+
+  const insts = await pool.query(
+    "SELECT serial, current_owner_id FROM product_instances WHERE model_id = $1 ORDER BY serial",
+    [modelId],
+  );
+
+  const byOwner = new Map<string, { serial: string | null }[]>();
+  for (const inst of insts.rows) {
+    if (!inst.current_owner_id) continue;
+    if (dir.rows.some((row) => serialCovered(inst.serial, row))) {
+      const list = byOwner.get(inst.current_owner_id) ?? [];
+      list.push({ serial: inst.serial });
+      byOwner.set(inst.current_owner_id, list);
+    }
+  }
+
+  const owners = Array.from(byOwner.entries()).map(([ownerId, units]) => ({ ownerId, units }));
+  return {
+    directiveKinds: Array.from(new Set(dir.rows.map((r) => r.kind as string))),
+    totalUnits: owners.reduce((n, o) => n + o.units.length, 0),
+    ownerCount: owners.length,
+    owners,
+  };
 }
 
 /** Live counts — never fabricated. */

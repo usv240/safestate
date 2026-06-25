@@ -13,7 +13,7 @@ export async function seedDemo(): Promise<void> {
     await client.query("DELETE FROM safety_directives WHERE model_id = $1", [DEMO.modelId]);
     await client.query("DELETE FROM transfer_attempts WHERE instance_id IN ($1,$2)", [DEMO.recalledInstanceId, DEMO.safeInstanceId]);
     await client.query("DELETE FROM ownership_transfers WHERE instance_id IN ($1,$2)", [DEMO.recalledInstanceId, DEMO.safeInstanceId]);
-    await client.query("DELETE FROM product_instances WHERE id IN ($1,$2)", [DEMO.recalledInstanceId, DEMO.safeInstanceId]);
+    await client.query("DELETE FROM product_instances WHERE model_id = $1", [DEMO.modelId]);
     await client.query("DELETE FROM safety_guard WHERE model_id = $1", [DEMO.modelId]);
     await client.query("DELETE FROM product_models WHERE id = $1", [DEMO.modelId]);
     await client.query("DELETE FROM manufacturers WHERE id = $1", [DEMO.manufacturerId]);
@@ -33,5 +33,12 @@ export async function seedDemo(): Promise<void> {
       "INSERT INTO product_instances (id, model_id, serial, current_owner_id, status) VALUES ($1,$2,$3,$4,'SAFE')",
       [DEMO.safeInstanceId, DEMO.modelId, DEMO.safeSerial, DEMO.sellerId],
     );
+    // In-the-wild units (resold to various owners) for the reach-back demo.
+    for (const u of DEMO.fleet) {
+      await client.query(
+        "INSERT INTO product_instances (id, model_id, serial, current_owner_id, status) VALUES ($1,$2,$3,$4,'SAFE')",
+        [u.id, DEMO.modelId, u.serial, u.owner],
+      );
+    }
   });
 }

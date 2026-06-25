@@ -10,6 +10,7 @@ import {
   XCircle,
   Loader2,
   Radio,
+  Gauge,
 } from "lucide-react";
 import { apiGet, apiPost } from "@/lib/client/api";
 import { Badge, Button, Card, Container, Eyebrow, cn } from "@/components/ui";
@@ -31,13 +32,26 @@ interface CrossRegion {
 }
 interface Conflict {
   winner: string;
-  loser: { code: string | null; subCode: string | null; message: string } | null;
+  loser: { label: string; code: string | null; subCode: string | null; message: string } | null;
+}
+interface LoadResult {
+  requested: number;
+  blocked: number;
+  soldRecalled: number;
+  errors: number;
+  retriesHandled: number;
+  durationMs: number;
+  throughputPerSec: number;
+  p50: number;
+  p95: number;
+  p99: number;
 }
 
 export default function LivePage() {
   const [info, setInfo] = useState<RegionInfo | null>(null);
   const [cr, setCr] = useState<CrossRegion | null>(null);
   const [conf, setConf] = useState<Conflict | null>(null);
+  const [load, setLoad] = useState<LoadResult | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
 
   useEffect(() => {
@@ -58,6 +72,15 @@ export default function LivePage() {
     setConf(null);
     try {
       setConf(await apiPost<Conflict>("/api/consistency/conflict", {}));
+    } finally {
+      setBusy(null);
+    }
+  }
+  async function runLoad() {
+    setBusy("load");
+    setLoad(null);
+    try {
+      setLoad(await apiPost<LoadResult>("/api/consistency/loadtest", { n: 100 }));
     } finally {
       setBusy(null);
     }
@@ -140,14 +163,22 @@ export default function LivePage() {
             </p>
 
             <div className="mt-5 space-y-3">
-              <TxnLane label="Transaction A" state={conf ? "commit" : "idle"} />
+              <TxnLane
+                label="Transaction A"
+                state={conf ? (conf.loser?.label === "Transaction A" ? "reject" : "commit") : "idle"}
+                code={conf?.loser?.label === "Transaction A" ? conf?.loser?.code : undefined}
+                subCode={conf?.loser?.label === "Transaction A" ? conf?.loser?.subCode : undefined}
+              />
               <TxnLane
                 label="Transaction B"
-                state={conf ? (conf.loser ? "reject" : "commit") : "idle"}
-                code={conf?.loser?.code}
-                subCode={conf?.loser?.subCode}
+                state={conf ? (conf.loser?.label === "Transaction B" ? "reject" : "commit") : "idle"}
+                code={conf?.loser?.label === "Transaction B" ? conf?.loser?.code : undefined}
+                subCode={conf?.loser?.label === "Transaction B" ? conf?.loser?.subCode : undefined}
               />
             </div>
+            {conf && (
+              <p className="mt-3 text-xs text-muted">{conf.winner}. The winner varies each run — a real race, not a script.</p>
+            )}
 
             <Button className="mt-6" onClick={runConflict} disabled={busy === "conf"}>
               {busy === "conf" ? <><Loader2 className="h-4 w-4 animate-spin" /> Running…</> : <><Zap className="h-4 w-4" /> Fire two conflicting transactions</>}
@@ -164,8 +195,63 @@ export default function LivePage() {
             )}
           </Card>
         </div>
+
+        {/* Correctness under load */}
+        <Card className="mt-6 p-7">
+          <h2 className="flex items-center gap-2 font-semibold text-fg">
+            <Gauge className="h-[18px] w-[18px] text-brand-600" /> Correctness under load
+          </h2>
+          <p className="mt-1.5 max-w-3xl text-sm leading-relaxed text-muted">
+            Fire 100 concurrent sale attempts at a recalled unit, against the live multi-region cluster. Every one must
+            be blocked — no amount of concurrency may let a recalled unit sell.
+          </p>
+          <Button className="mt-5" onClick={runLoad} disabled={busy === "load"}>
+            {busy === "load" ? (
+              <><Loader2 className="h-4 w-4 animate-spin" /> Running 100 concurrent attempts…</>
+            ) : (
+              <><Zap className="h-4 w-4" /> Run the stress test</>
+            )}
+          </Button>
+
+          {load && (
+            <>
+              <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 animate-fade-up">
+                <Metric label="Concurrent attempts" value={String(load.requested)} />
+                <Metric label="Blocked" value={String(load.blocked)} tone="brand" />
+                <Metric label="Recalled units sold" value={String(load.soldRecalled)} tone={load.soldRecalled === 0 ? "brand" : "red"} />
+                <Metric label="OCC retries handled" value={String(load.retriesHandled)} />
+                <Metric label="Throughput" value={`${load.throughputPerSec}/s`} />
+                <Metric label="p50 latency" value={`${load.p50} ms`} />
+                <Metric label="p95 latency" value={`${load.p95} ms`} />
+                <Metric label="p99 latency" value={`${load.p99} ms`} />
+              </div>
+              <p
+                className={cn(
+                  "mt-4 flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium",
+                  load.soldRecalled === 0 && load.errors === 0 ? "bg-brand-50 text-brand-800" : "bg-red-50 text-red-800",
+                )}
+              >
+                {load.soldRecalled === 0 ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+                {load.soldRecalled === 0
+                  ? `All ${load.requested} concurrent attempts blocked. Zero recalled units sold under load.`
+                  : `${load.soldRecalled} recalled unit(s) sold — correctness violated.`}
+              </p>
+            </>
+          )}
+        </Card>
       </Container>
     </main>
+  );
+}
+
+function Metric({ label, value, tone }: { label: string; value: string; tone?: "brand" | "red" }) {
+  return (
+    <div className="rounded-xl border border-border bg-surface px-4 py-3">
+      <div className={cn("text-2xl font-bold tabular-nums", tone === "brand" ? "text-brand-700" : tone === "red" ? "text-red-700" : "text-fg")}>
+        {value}
+      </div>
+      <div className="mt-0.5 text-[11px] font-medium uppercase tracking-wide text-muted">{label}</div>
+    </div>
   );
 }
 

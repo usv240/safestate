@@ -65,11 +65,11 @@ export default function PassportPage() {
     <main>
       <Container className="py-12">
         <Eyebrow>Owner</Eyebrow>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink-900">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-fg">
           {b("passport.heading")?.title ?? "Safety Passport"}
           <InfoButton topicId="passport.timeline" />
         </h1>
-        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted">
           {b("passport.explainer")?.body_md ?? ""}
         </p>
 
@@ -88,10 +88,10 @@ export default function PassportPage() {
                       {recalled ? <AlertTriangle className="h-5 w-5" /> : <ShieldCheck className="h-5 w-5" />}
                     </span>
                     <div>
-                      <div className="text-[11px] font-medium uppercase tracking-wide text-ink-500">
+                      <div className="text-[11px] font-medium uppercase tracking-wide text-muted">
                         {p.instance.category} · <span className="font-mono">serial {p.instance.serial}</span>
                       </div>
-                      <div className="mt-0.5 font-semibold text-ink-900">
+                      <div className="mt-0.5 font-semibold text-fg">
                         {p.instance.manufacturer_name} {p.instance.model_name}
                       </div>
                     </div>
@@ -100,11 +100,11 @@ export default function PassportPage() {
                 </div>
 
                 <div className="p-6">
-                  <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3.5 py-2.5 text-sm">
-                    <span className="inline-flex items-center gap-2 text-ink-500">
+                  <div className="flex items-center justify-between rounded-lg bg-surface2 px-3.5 py-2.5 text-sm">
+                    <span className="inline-flex items-center gap-2 text-muted">
                       <User className="h-4 w-4" /> Current owner
                     </span>
-                    <span className="font-medium text-ink-900">{owner}</span>
+                    <span className="font-medium text-fg">{owner}</span>
                   </div>
 
                   {recalled && p.instance.current_owner_id && (
@@ -121,21 +121,21 @@ export default function PassportPage() {
                   )}
 
                   <div className="mt-5">
-                    <div className="text-xs font-semibold uppercase tracking-wide text-ink-500">Safety record</div>
+                    <div className="text-xs font-semibold uppercase tracking-wide text-muted">Safety record</div>
                     {p.directives.length === 0 ? (
                       <p className="mt-2 inline-flex items-center gap-1.5 text-sm text-brand-700">
                         <ShieldCheck className="h-4 w-4" /> Clear record — no safety directives.
                       </p>
                     ) : (
-                      <ol className="mt-3 space-y-3 border-l-2 border-slate-100 pl-5">
+                      <ol className="mt-3 space-y-3 border-l-2 border-border pl-5">
                         {p.directives.map((d, i) => (
                           <li key={i} className="relative">
                             <span className="absolute -left-[27px] top-1 h-3 w-3 rounded-full border-2 border-white bg-red-500 shadow-sm" />
-                            <div className="text-sm font-medium text-ink-900">
+                            <div className="text-sm font-medium text-fg">
                               {d.kind}{d.source ? ` · ${d.source}` : ""}
                             </div>
-                            {d.hazard && <div className="text-xs text-ink-500">{d.hazard}</div>}
-                            {d.remedy && <div className="text-xs text-ink-500">Remedy: {d.remedy}</div>}
+                            {d.hazard && <div className="text-xs text-muted">{d.hazard}</div>}
+                            {d.remedy && <div className="text-xs text-muted">Remedy: {d.remedy}</div>}
                           </li>
                         ))}
                       </ol>
@@ -146,7 +146,7 @@ export default function PassportPage() {
             );
           })}
           {products.length === 0 && (
-            <Card className="flex h-48 items-center justify-center text-ink-500">
+            <Card className="flex h-48 items-center justify-center text-muted">
               <Baby className="mr-2 h-5 w-5" /> Loading products…
             </Card>
           )}

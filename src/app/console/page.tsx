@@ -87,18 +87,18 @@ export default function ConsolePage() {
     <main>
       <Container className="py-12">
         <Eyebrow>Manufacturer · Safety operations</Eyebrow>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink-900">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-fg">
           {b("console.heading")?.title ?? "Manufacturer / Safety Console"}
           <InfoButton topicId="console.issue" />
         </h1>
-        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted">
           {b("console.explainer")?.body_md ?? ""}
         </p>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_0.9fr]">
           <Card className="p-7">
             <div className="flex items-center justify-between">
-              <h2 className="flex items-center gap-2 font-semibold text-ink-900">
+              <h2 className="flex items-center gap-2 font-semibold text-fg">
                 <Megaphone className="h-4.5 w-4.5 text-brand-600" /> Issue a safety directive
                 <InfoButton topicId="console.scope" />
               </h2>
@@ -155,24 +155,24 @@ export default function ConsolePage() {
           </Card>
 
           <Card className="p-7">
-            <h2 className="font-semibold text-ink-900">Active directives</h2>
-            <p className="mt-1 text-sm text-ink-500">Everything enforced on this model right now.</p>
+            <h2 className="font-semibold text-fg">Active directives</h2>
+            <p className="mt-1 text-sm text-muted">Everything enforced on this model right now.</p>
             {directives.length === 0 ? (
-              <div className="mt-6 rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm text-ink-500">
+              <div className="mt-6 rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted">
                 No directives yet. Publish one to see it enforced instantly.
               </div>
             ) : (
               <ul className="mt-4 space-y-3">
                 {directives.map((d, i) => (
-                  <li key={i} className="rounded-xl border border-slate-200 bg-white p-4">
+                  <li key={i} className="rounded-xl border border-border bg-surface p-4">
                     <div className="flex items-center gap-2">
                       <Badge tone="red">
                         <AlertTriangle className="h-3 w-3" /> {d.kind}
                       </Badge>
-                      {d.source && <span className="text-xs text-ink-500">via {d.source}</span>}
+                      {d.source && <span className="text-xs text-muted">via {d.source}</span>}
                     </div>
-                    {d.hazard && <p className="mt-2 text-sm text-ink-700">{d.hazard}</p>}
-                    {d.remedy && <p className="mt-1 text-sm text-ink-500">Remedy: {d.remedy}</p>}
+                    {d.hazard && <p className="mt-2 text-sm text-fg2">{d.hazard}</p>}
+                    {d.remedy && <p className="mt-1 text-sm text-muted">Remedy: {d.remedy}</p>}
                   </li>
                 ))}
               </ul>
@@ -187,7 +187,7 @@ export default function ConsolePage() {
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="grid grid-cols-[112px_1fr] items-center gap-3">
-      <span className="text-xs font-medium text-ink-500">{label}</span>
+      <span className="text-xs font-medium text-muted">{label}</span>
       {children}
     </label>
   );
@@ -209,7 +209,7 @@ function Input({
       value={value}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
-      className={`h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-ink-900 shadow-sm outline-none transition-colors placeholder:text-ink-500/60 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 ${mono ? "font-mono" : ""}`}
+      className={`h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm text-fg shadow-sm outline-none transition-colors placeholder:text-muted/60 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 ${mono ? "font-mono" : ""}`}
     />
   );
 }
@@ -227,7 +227,7 @@ function Select({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-ink-900 shadow-sm outline-none transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+      className="h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm text-fg shadow-sm outline-none transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
     >
       {options.map((o) => (
         <option key={o} value={o}>

@@ -35,17 +35,17 @@ export function InfoButton({ topicId }: { topicId: string }) {
         onClick={toggle}
         aria-label="More information"
         aria-expanded={open}
-        className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-400 text-[10px] font-semibold leading-none text-slate-500 hover:border-slate-600 hover:text-slate-800"
+        className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-border text-[10px] font-semibold leading-none text-muted hover:border-fg2 hover:text-slate-800"
       >
         i
       </button>
       {open && topic && (
         <span
           role="tooltip"
-          className="absolute left-1/2 top-6 z-30 w-64 -translate-x-1/2 rounded-lg border border-slate-200 bg-white p-3 text-left text-xs font-normal shadow-lg"
+          className="absolute left-1/2 top-6 z-30 w-64 -translate-x-1/2 rounded-lg border border-border bg-surface p-3 text-left text-xs font-normal shadow-lg"
         >
           <span className="block font-semibold text-slate-900">{topic.title}</span>
-          <span className="mt-1 block whitespace-pre-line text-slate-600">
+          <span className="mt-1 block whitespace-pre-line text-fg2">
             {topic.body_md}
           </span>
           {topic.learn_more_url && (

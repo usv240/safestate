@@ -67,11 +67,11 @@ export default function LivePage() {
     <main>
       <Container className="py-12">
         <Eyebrow>Proof</Eyebrow>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink-900">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-fg">
           Live Consistency Lab
           <InfoButton topicId="dsql.consistency" />
         </h1>
-        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted">
           The two guarantees that make Aurora DSQL the right database for safety-critical
           decisions — run them yourself, against the live cluster.
         </p>
@@ -90,11 +90,11 @@ export default function LivePage() {
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           {/* Cross-region */}
           <Card className="flex flex-col p-7">
-            <h2 className="flex items-center gap-2 font-semibold text-ink-900">
+            <h2 className="flex items-center gap-2 font-semibold text-fg">
               <GitCompareArrows className="h-4.5 w-4.5 text-brand-600" />
               No stale-safe read, across regions
             </h2>
-            <p className="mt-1.5 text-sm leading-relaxed text-ink-500">
+            <p className="mt-1.5 text-sm leading-relaxed text-muted">
               Issue a recall on Region A’s endpoint, then read it back from Region B’s endpoint —
               immediately.
             </p>
@@ -129,12 +129,12 @@ export default function LivePage() {
 
           {/* OCC conflict */}
           <Card className="flex flex-col p-7">
-            <h2 className="flex items-center gap-2 font-semibold text-ink-900">
+            <h2 className="flex items-center gap-2 font-semibold text-fg">
               <ShieldAlert className="h-4.5 w-4.5 text-brand-600" />
               Optimistic concurrency, on the guard row
               <InfoButton topicId="gate.checkout" />
             </h2>
-            <p className="mt-1.5 text-sm leading-relaxed text-ink-500">
+            <p className="mt-1.5 text-sm leading-relaxed text-muted">
               Two transactions write the same model’s safety guard at once. DSQL lets one commit and
               rejects the other — the conflict our retry wrapper handles.
             </p>
@@ -154,9 +154,9 @@ export default function LivePage() {
             </Button>
 
             {conf?.loser && (
-              <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3.5 animate-fade-up">
-                <p className="font-mono text-xs text-ink-700">{conf.loser.message}</p>
-                <p className="mt-2 text-xs text-ink-500">
+              <div className="mt-4 rounded-xl border border-border bg-surface2 p-3.5 animate-fade-up">
+                <p className="font-mono text-xs text-fg2">{conf.loser.message}</p>
+                <p className="mt-2 text-xs text-muted">
                   In the app, the loser retries with backoff and re-reads the new truth — so the
                   decision is always correct.
                 </p>
@@ -187,7 +187,7 @@ function RegionMap({
   return (
     <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
       <RegionNode region={regionA} status={statusA} role="writes" epoch={epoch} tone="brand" />
-      <div className="relative h-0.5 w-full min-w-10 overflow-hidden rounded bg-slate-200">
+      <div className="relative h-0.5 w-full min-w-10 overflow-hidden rounded bg-border">
         <div
           className={cn(
             "absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-brand-500 to-transparent",
@@ -217,7 +217,7 @@ function RegionNode({
 }) {
   const recalled = status === "RECALLED";
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-soft">
+    <div className="rounded-2xl border border-border bg-surface p-4 text-center shadow-soft">
       <div className="relative mx-auto inline-flex">
         <span
           className={cn(
@@ -229,12 +229,12 @@ function RegionNode({
           <Database className="h-5 w-5" />
         </span>
       </div>
-      <div className="mt-2 font-mono text-[11px] text-ink-500">{region}</div>
-      <div className="text-[10px] uppercase tracking-wide text-ink-500/70">{role}</div>
+      <div className="mt-2 font-mono text-[11px] text-muted">{region}</div>
+      <div className="text-[10px] uppercase tracking-wide text-muted/70">{role}</div>
       <div className={cn("mt-1.5 text-sm font-bold", recalled ? "text-red-700" : "text-brand-700")}>
         {status}
       </div>
-      <div className="text-[11px] text-ink-500">epoch {epoch}</div>
+      <div className="text-[11px] text-muted">epoch {epoch}</div>
     </div>
   );
 }
@@ -256,13 +256,13 @@ function TxnLane({
         "flex items-center justify-between rounded-xl border px-4 py-3 transition-colors",
         state === "commit" && "border-brand-200 bg-brand-50/70",
         state === "reject" && "border-red-200 bg-red-50/70",
-        state === "idle" && "border-slate-200 bg-slate-50",
+        state === "idle" && "border-border bg-surface2",
       )}
     >
-      <span className="flex items-center gap-2 text-sm font-medium text-ink-900">
-        <Radio className="h-4 w-4 text-ink-500" /> {label}
+      <span className="flex items-center gap-2 text-sm font-medium text-fg">
+        <Radio className="h-4 w-4 text-muted" /> {label}
       </span>
-      {state === "idle" && <span className="text-xs text-ink-500">waiting</span>}
+      {state === "idle" && <span className="text-xs text-muted">waiting</span>}
       {state === "commit" && (
         <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700">
           <CheckCircle2 className="h-4 w-4" /> committed
@@ -270,8 +270,8 @@ function TxnLane({
       )}
       {state === "reject" && (
         <span className="inline-flex items-center gap-2">
-          <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs text-red-700 ring-1 ring-red-200">{code}</code>
-          {subCode && <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs text-red-700 ring-1 ring-red-200">{subCode}</code>}
+          <code className="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-red-700 ring-1 ring-red-200">{code}</code>
+          {subCode && <code className="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-red-700 ring-1 ring-red-200">{subCode}</code>}
           <XCircle className="h-4 w-4 text-red-600" />
         </span>
       )}

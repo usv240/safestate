@@ -36,10 +36,10 @@ export default function RecallsPage() {
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <Eyebrow>Live feed</Eyebrow>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink-900">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-fg">
               Real CPSC recalls
             </h1>
-            <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+            <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted">
               Nursery and juvenile-product recalls pulled from the public CPSC Recall API by a daily
               Vercel Cron job. The demo runs off a frozen snapshot — this is the live source.
             </p>
@@ -50,7 +50,7 @@ export default function RecallsPage() {
         </div>
 
         {data && (
-          <p className="mt-4 text-sm text-ink-500">
+          <p className="mt-4 text-sm text-muted">
             {data.recalls.length} recalls{updated ? ` · last ingested ${updated}` : ""}
           </p>
         )}
@@ -64,14 +64,14 @@ export default function RecallsPage() {
                     <ShieldAlert className="h-4.5 w-4.5" />
                   </span>
                   <div>
-                    <h3 className="font-semibold leading-snug text-ink-900">
+                    <h3 className="font-semibold leading-snug text-fg">
                       {r.product || "Recalled product"}
                     </h3>
-                    <p className="mt-0.5 text-xs text-ink-500">CPSC recall #{r.recall_number}</p>
+                    <p className="mt-0.5 text-xs text-muted">CPSC recall #{r.recall_number}</p>
                   </div>
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
-                  <span className="font-mono text-xs text-ink-500">{r.recall_date}</span>
+                  <span className="font-mono text-xs text-muted">{r.recall_date}</span>
                   <Badge tone="slate">#{r.recall_number}</Badge>
                 </div>
               </div>
@@ -80,13 +80,13 @@ export default function RecallsPage() {
                 {r.hazard && (
                   <div className="rounded-lg bg-red-50/60 px-3 py-2 text-sm">
                     <span className="font-semibold text-red-800">Hazard. </span>
-                    <span className="text-ink-700">{r.hazard}</span>
+                    <span className="text-fg2">{r.hazard}</span>
                   </div>
                 )}
                 {r.remedy && (
-                  <div className="rounded-lg bg-slate-50 px-3 py-2 text-sm">
-                    <span className="font-semibold text-ink-900">Remedy. </span>
-                    <span className="text-ink-700">{r.remedy}</span>
+                  <div className="rounded-lg bg-surface2 px-3 py-2 text-sm">
+                    <span className="font-semibold text-fg">Remedy. </span>
+                    <span className="text-fg2">{r.remedy}</span>
                   </div>
                 )}
               </div>
@@ -104,7 +104,7 @@ export default function RecallsPage() {
             </Card>
           ))}
           {!data && (
-            <Card className="flex h-40 items-center justify-center text-ink-500">Loading live recalls…</Card>
+            <Card className="flex h-40 items-center justify-center text-muted">Loading live recalls…</Card>
           )}
         </div>
       </Container>

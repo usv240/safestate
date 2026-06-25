@@ -16,6 +16,8 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",
     "@aws-sdk/dsql-signer": "^3.1072.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "dotenv": "^17.4.2",
     "geist": "^1.7.2",
     "lucide-react": "^1.21.0",

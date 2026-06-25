@@ -81,11 +81,11 @@ export default function GatePage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-2xl">
             <Eyebrow>Marketplace</Eyebrow>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink-900">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-fg">
               {b("gate.heading")?.title ?? "Marketplace Safety Gate"}
               <InfoButton topicId="gate.checkout" />
             </h1>
-            <p className="mt-2 text-[15px] leading-relaxed text-ink-500">
+            <p className="mt-2 text-[15px] leading-relaxed text-muted">
               {b("gate.explainer")?.body_md ?? ""}
             </p>
           </div>
@@ -101,8 +101,8 @@ export default function GatePage() {
             const recalled = l.guardStatus !== "SAFE";
             return (
               <Card key={l.instanceId} className="overflow-hidden p-0" interactive>
-                <div className="relative flex h-36 items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200/70">
-                  <Baby className="h-12 w-12 text-slate-400" strokeWidth={1.25} />
+                <div className="relative flex h-36 items-center justify-center bg-gradient-to-br from-surface2 to-border/70">
+                  <Baby className="h-12 w-12 text-muted" strokeWidth={1.25} />
                   <span className="absolute right-3 top-3">
                     <Badge tone={recalled ? "red" : "brand"}>
                       <span className={`h-1.5 w-1.5 rounded-full ${recalled ? "bg-red-500" : "bg-brand-500"}`} />
@@ -112,10 +112,10 @@ export default function GatePage() {
                 </div>
                 <div className="p-5">
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-semibold text-ink-900">{l.title}</h3>
-                    <span className="shrink-0 text-lg font-semibold text-ink-900">{l.priceLabel}</span>
+                    <h3 className="font-semibold text-fg">{l.title}</h3>
+                    <span className="shrink-0 text-lg font-semibold text-fg">{l.priceLabel}</span>
                   </div>
-                  <p className="mt-1 text-sm text-ink-500">
+                  <p className="mt-1 text-sm text-muted">
                     {l.condition} · <span className="font-mono text-xs">serial {l.serial}</span>
                   </p>
                   <Button
@@ -161,7 +161,7 @@ function VerdictBanner({ v }: { v: Verdict & { title: string } }) {
           <div className={`text-xl font-bold ${blocked ? "text-red-800" : "text-brand-800"}`}>
             {blocked ? "BLOCKED — Unsafe for resale" : "AUTHORIZED — Safe to transfer"}
           </div>
-          <div className="text-sm text-ink-500">{v.title}</div>
+          <div className="text-sm text-muted">{v.title}</div>
         </div>
       </div>
       {blocked && (v.reason || v.remedy || v.source) && (
@@ -171,7 +171,7 @@ function VerdictBanner({ v }: { v: Verdict & { title: string } }) {
           {v.source && <Field label="Source" value={v.source} />}
         </div>
       )}
-      <div className="border-t border-slate-200/60 bg-white/60 px-6 py-2.5 text-xs text-ink-500">
+      <div className="border-t border-border/60 bg-surface/60 px-6 py-2.5 text-xs text-muted">
         Decision committed via Aurora DSQL · transaction attempts: {v.attempts}
       </div>
     </div>
@@ -180,9 +180,9 @@ function VerdictBanner({ v }: { v: Verdict & { title: string } }) {
 
 function Field({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-white/80 p-4">
-      <div className="text-[11px] font-semibold uppercase tracking-wide text-ink-500">{label}</div>
-      <div className="mt-1 text-sm text-ink-900">{value}</div>
+    <div className="bg-surface/80 p-4">
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">{label}</div>
+      <div className="mt-1 text-sm text-fg">{value}</div>
     </div>
   );
 }

@@ -51,11 +51,11 @@ export default function MatchPage() {
     <main>
       <Container className="py-12">
         <Eyebrow>AI</Eyebrow>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink-900">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-fg">
           Match Assistant
           <InfoButton topicId="match.assistant" />
         </h1>
-        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted">
           Secondhand listings are messy free text and CPSC model data is incomplete. The assistant
           maps a listing to a real recall, scores its confidence, and routes uncertain matches to a
           human review queue.
@@ -63,19 +63,19 @@ export default function MatchPage() {
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <Card className="p-7">
-            <label className="text-sm font-medium text-ink-700">Paste a marketplace listing</label>
+            <label className="text-sm font-medium text-fg2">Paste a marketplace listing</label>
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
               rows={4}
-              className="mt-2 w-full rounded-xl border border-slate-200 bg-white p-3 text-sm text-ink-900 outline-none transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+              className="mt-2 w-full rounded-xl border border-border bg-surface p-3 text-sm text-fg outline-none transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             />
             <div className="mt-3 flex flex-wrap gap-2">
               {EXAMPLES.map((ex, i) => (
                 <button
                   key={i}
                   onClick={() => setText(ex)}
-                  className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-ink-600 hover:border-slate-300"
+                  className="rounded-full border border-border bg-surface px-3 py-1 text-xs text-fg2 hover:border-border"
                 >
                   Example {i + 1}
                 </button>
@@ -90,19 +90,19 @@ export default function MatchPage() {
 
           <Card className="p-7">
             <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-ink-900">Review queue</h2>
+              <h2 className="font-semibold text-fg">Review queue</h2>
               <Badge tone="slate">latest</Badge>
             </div>
-            <p className="mt-1 text-sm text-ink-500">Every check is logged for compliance.</p>
+            <p className="mt-1 text-sm text-muted">Every check is logged for compliance.</p>
             {reviews.length === 0 ? (
-              <div className="mt-5 rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm text-ink-500">
+              <div className="mt-5 rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted">
                 No checks yet.
               </div>
             ) : (
               <ul className="mt-4 space-y-2">
                 {reviews.map((rv, i) => (
-                  <li key={i} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-3">
-                    <span className="truncate text-sm text-ink-700">{rv.listing_ref}</span>
+                  <li key={i} className="flex items-center justify-between gap-3 rounded-lg border border-border bg-surface p-3">
+                    <span className="truncate text-sm text-fg2">{rv.listing_ref}</span>
                     <StateBadge state={rv.state} confidence={rv.confidence} />
                   </li>
                 ))}
@@ -136,11 +136,11 @@ function ResultCard({ r }: { r: MatchResult }) {
       </div>
 
       <div className="mt-4">
-        <div className="flex items-center justify-between text-xs text-ink-500">
+        <div className="flex items-center justify-between text-xs text-muted">
           <span>confidence</span>
           <span className="font-mono">{Math.round(r.confidence * 100)}%</span>
         </div>
-        <div className="mt-1 h-2 overflow-hidden rounded-full bg-white">
+        <div className="mt-1 h-2 overflow-hidden rounded-full bg-surface">
           <div
             className={`h-full rounded-full ${tone === "red" ? "bg-red-500" : tone === "amber" ? "bg-amber-500" : "bg-brand-500"}`}
             style={{ width: `${Math.round(r.confidence * 100)}%` }}
@@ -149,12 +149,12 @@ function ResultCard({ r }: { r: MatchResult }) {
       </div>
 
       {r.recallTitle && (
-        <p className="mt-3 text-sm text-ink-700">
+        <p className="mt-3 text-sm text-fg2">
           <span className="font-medium">Closest recall:</span> {r.recallTitle}{" "}
-          <span className="font-mono text-xs text-ink-500">#{r.recallNumber}</span>
+          <span className="font-mono text-xs text-muted">#{r.recallNumber}</span>
         </p>
       )}
-      <p className="mt-2 flex items-start gap-1.5 text-sm text-ink-600">
+      <p className="mt-2 flex items-start gap-1.5 text-sm text-fg2">
         <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-600" /> {r.reasoning}
       </p>
     </div>

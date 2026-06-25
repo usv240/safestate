@@ -13,8 +13,8 @@ const variants: Record<Variant, string> = {
   danger:
     "bg-red-600 text-white shadow-soft hover:bg-red-700 hover:-translate-y-0.5 hover:shadow-lift focus-visible:ring-red-500",
   secondary:
-    "bg-white text-ink-900 ring-1 ring-inset ring-slate-200 shadow-soft hover:ring-slate-300 hover:-translate-y-0.5 focus-visible:ring-slate-400",
-  ghost: "text-ink-700 hover:bg-slate-100 hover:text-ink-900",
+    "bg-surface text-fg ring-1 ring-inset ring-border shadow-soft hover:ring-border hover:-translate-y-0.5 focus-visible:ring-border",
+  ghost: "text-fg2 hover:bg-surface2 hover:text-fg",
 };
 
 const sizes: Record<Size, string> = {
@@ -57,7 +57,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-xl2 border border-slate-200/70 bg-white/90 shadow-soft",
+        "rounded-xl2 border border-border/70 bg-surface/90 shadow-soft",
         interactive && "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lift",
         className,
       )}
@@ -71,7 +71,7 @@ type Tone = "brand" | "sky" | "slate" | "red" | "amber";
 const tones: Record<Tone, string> = {
   brand: "bg-brand-50 text-brand-700 ring-brand-600/15",
   sky: "bg-sky-50 text-sky-700 ring-sky-600/15",
-  slate: "bg-slate-100 text-slate-600 ring-slate-500/15",
+  slate: "bg-surface2 text-fg2 ring-fg2/15",
   red: "bg-red-50 text-red-700 ring-red-600/15",
   amber: "bg-amber-50 text-amber-700 ring-amber-600/15",
 };

@@ -34,10 +34,10 @@ export default function HowItWorks() {
     <main>
       <Container className="py-12">
         <Eyebrow>How it works</Eyebrow>
-        <h1 className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight text-ink-900 sm:text-4xl">
+        <h1 className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
           A recall stops being a PDF and becomes a decision.
         </h1>
-        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
           SafeState turns recall status into transaction-time authorization, enforced the moment a
           secondhand product changes hands.
         </p>
@@ -50,10 +50,10 @@ export default function HowItWorks() {
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
                   <s.icon className="h-5 w-5" />
                 </span>
-                <span className="font-mono text-xs text-ink-500">0{i + 1}</span>
+                <span className="font-mono text-xs text-muted">0{i + 1}</span>
               </div>
-              <h3 className="mt-4 font-semibold text-ink-900">{s.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-ink-500">{s.body}</p>
+              <h3 className="mt-4 font-semibold text-fg">{s.title}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted">{s.body}</p>
             </Card>
           ))}
         </div>
@@ -61,7 +61,7 @@ export default function HowItWorks() {
         {/* Architecture */}
         <div className="mt-12">
           <Eyebrow>Architecture</Eyebrow>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-ink-900">
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-fg">
             One logical, strongly-consistent database — across regions.
           </h2>
           <Card className="mt-5 p-7">
@@ -73,8 +73,8 @@ export default function HowItWorks() {
         <div className="mt-12 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
           <Card className="p-7">
             <Eyebrow>The guarantee</Eyebrow>
-            <h2 className="mt-2 text-xl font-semibold text-ink-900">{guarantee?.title ?? "No stale-safe read, ever."}</h2>
-            <p className="mt-3 text-[15px] leading-relaxed text-ink-500">
+            <h2 className="mt-2 text-xl font-semibold text-fg">{guarantee?.title ?? "No stale-safe read, ever."}</h2>
+            <p className="mt-3 text-[15px] leading-relaxed text-muted">
               {guarantee?.body_md ??
                 "A recall and a sale of the same model write the same guard row, so DSQL's optimistic concurrency control detects the conflict and the loser retries against the new truth."}
             </p>
@@ -93,8 +93,8 @@ export default function HowItWorks() {
                 ["transfer_attempts", "idempotency keys"],
               ].map(([t, d]) => (
                 <li key={t} className="flex items-baseline gap-2">
-                  <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-ink-700">{t}</code>
-                  <span className="text-ink-500">{d}</span>
+                  <code className="rounded bg-surface2 px-1.5 py-0.5 font-mono text-xs text-fg2">{t}</code>
+                  <span className="text-muted">{d}</span>
                 </li>
               ))}
             </ul>
@@ -109,39 +109,39 @@ function ArchitectureDiagram() {
   return (
     <div className="grid items-stretch gap-4 lg:grid-cols-[1fr_auto_1.2fr]">
       {/* Vercel */}
-      <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5">
-        <div className="flex items-center gap-2 text-sm font-semibold text-ink-900">
+      <div className="rounded-2xl border border-border bg-surface2/60 p-5">
+        <div className="flex items-center gap-2 text-sm font-semibold text-fg">
           <Server className="h-4 w-4" /> Vercel · Next.js
         </div>
         <div className="mt-3 space-y-2">
           {["Marketplace Gate", "Manufacturer Console", "Safety Passport"].map((s) => (
-            <div key={s} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-ink-700">{s}</div>
+            <div key={s} className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-fg2">{s}</div>
           ))}
         </div>
-        <div className="mt-3 text-center text-xs text-ink-500">route handlers · IAM token auth</div>
+        <div className="mt-3 text-center text-xs text-muted">route handlers · IAM token auth</div>
       </div>
 
       {/* Connector */}
-      <div className="flex flex-col items-center justify-center gap-1 text-ink-500">
+      <div className="flex flex-col items-center justify-center gap-1 text-muted">
         <ArrowRight className="hidden h-5 w-5 lg:block" />
         <span className="font-mono text-[11px]">pg / TLS</span>
       </div>
 
       {/* DSQL */}
       <div className="rounded-2xl border border-brand-200 bg-brand-50/40 p-5">
-        <div className="flex items-center gap-2 text-sm font-semibold text-ink-900">
+        <div className="flex items-center gap-2 text-sm font-semibold text-fg">
           <Database className="h-4 w-4 text-brand-700" /> Amazon Aurora DSQL
         </div>
         <div className="mt-3 grid grid-cols-2 gap-2">
           <Node label="Region A" sub="us-east-1" tone="brand" />
           <Node label="Region B" sub="us-east-2" tone="sky" />
         </div>
-        <div className="mt-2 flex items-center justify-center gap-1.5 rounded-lg border border-dashed border-slate-300 bg-white/60 py-1.5 text-xs text-ink-500">
+        <div className="mt-2 flex items-center justify-center gap-1.5 rounded-lg border border-dashed border-border bg-surface/60 py-1.5 text-xs text-muted">
           <Radio className="h-3.5 w-3.5" /> Witness · us-west-2 (log-only)
         </div>
         <div className="mt-3 flex items-center justify-between">
           <Badge tone="brand">active-active · strong consistency</Badge>
-          <span className="font-mono text-[11px] text-ink-500">CPSC ingest →</span>
+          <span className="font-mono text-[11px] text-muted">CPSC ingest →</span>
         </div>
       </div>
     </div>
@@ -150,10 +150,10 @@ function ArchitectureDiagram() {
 
 function Node({ label, sub, tone }: { label: string; sub: string; tone: "brand" | "sky" }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-3 text-center">
+    <div className="rounded-xl border border-border bg-surface p-3 text-center">
       <Database className={`mx-auto h-4 w-4 ${tone === "brand" ? "text-brand-600" : "text-sky-600"}`} />
-      <div className="mt-1 text-xs font-semibold text-ink-900">{label}</div>
-      <div className="font-mono text-[10px] text-ink-500">{sub}</div>
+      <div className="mt-1 text-xs font-semibold text-fg">{label}</div>
+      <div className="font-mono text-[10px] text-muted">{sub}</div>
     </div>
   );
 }

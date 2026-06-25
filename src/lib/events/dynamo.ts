@@ -75,6 +75,16 @@ export async function recordEvent(kind: EventKind, label: string): Promise<void>
   }
 }
 
+/** Cheap reachability check for the health indicator. */
+export async function pingDynamo(): Promise<boolean> {
+  try {
+    await getDoc().send(new GetCommand({ TableName: TABLE, Key: { pk: "STAT", sk: "TOTAL" } }));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export interface ActivityStats {
   total: number;
   check: number;

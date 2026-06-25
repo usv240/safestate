@@ -20,7 +20,11 @@ export default function ConsolePage() {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [modelId, setModelId] = useState<string | null>(null);
   const [directives, setDirectives] = useState<Directive[]>([]);
-  const [result, setResult] = useState<{ newEpoch: number; attempts: number } | null>(null);
+  const [result, setResult] = useState<{
+    newEpoch: number;
+    attempts: number;
+    notify?: { owners: number; units: number; emailed: boolean } | null;
+  } | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -64,7 +68,7 @@ export default function ConsolePage() {
     setErr(null);
     setResult(null);
     try {
-      const res = await apiPost<{ newEpoch: number; attempts: number }>("/api/directives", {
+      const res = await apiPost<{ newEpoch: number; attempts: number; notify?: { owners: number; units: number; emailed: boolean } | null }>("/api/directives", {
         modelId,
         kind,
         hazard: hazard || undefined,
@@ -152,6 +156,13 @@ export default function ConsolePage() {
                 <span>
                   Published. Model safety epoch is now <b>{result.newEpoch}</b> (txn attempts {result.attempts}).
                   Open the Marketplace Gate — affected units are now blocked.
+                  {result.notify && result.notify.owners > 0 && (
+                    <>
+                      {" "}SafeState notified <b>{result.notify.owners}</b> current owner
+                      {result.notify.owners > 1 ? "s" : ""} ({result.notify.units} unit
+                      {result.notify.units > 1 ? "s" : ""}){result.notify.emailed ? " by email" : ", recorded for dispatch"}.
+                    </>
+                  )}
                 </span>
               </div>
             )}

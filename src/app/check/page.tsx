@@ -6,23 +6,33 @@ import { Search, Loader2, Ban, CheckCircle2, ExternalLink } from "lucide-react";
 import { apiGet } from "@/lib/client/api";
 import { Badge, Button, Card, Container, Eyebrow } from "@/components/ui";
 
+type Agency = "CPSC" | "FDA" | "NHTSA";
 interface RecallHit {
-  recallNumber: string;
+  agency: Agency;
   title: string;
-  product: string;
   hazard: string;
-  remedy: string;
-  recallDate: string;
-  url: string;
+  remedy?: string;
+  date: string;
+  url?: string;
+  ref: string;
 }
 interface SearchResp {
   query: string;
-  source: "live" | "feed" | "none";
+  agencies: Agency[];
   count: number;
   hits: RecallHit[];
 }
 
-const EXAMPLES = ["space heater", "power bank", "stroller", "blender", "treadmill"];
+const EXAMPLES = ["space heater", "infant formula", "Honda Civic 2018", "power bank", "valsartan"];
+
+function agencyTone(a: Agency): "sky" | "brand" | "amber" {
+  return a === "CPSC" ? "sky" : a === "FDA" ? "brand" : "amber";
+}
+const AGENCY_LABEL: Record<Agency, string> = {
+  CPSC: "CPSC · products",
+  FDA: "FDA · food & drugs",
+  NHTSA: "NHTSA · vehicles",
+};
 
 export default function CheckPage() {
   const [q, setQ] = useState("");
@@ -72,8 +82,8 @@ export default function CheckPage() {
         <Eyebrow>For everyone</Eyebrow>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-fg sm:text-4xl">Is it recalled?</h1>
         <p className="mt-3 text-[15px] leading-relaxed text-muted">
-          Search any product you own or are about to buy, new or secondhand. SafeState checks the live U.S. CPSC
-          recall database, every category, for free. No account needed.
+          Search any product, food, drug, or vehicle you own or are about to buy. SafeState checks the live recall
+          databases of the CPSC, FDA, and NHTSA at once, for free. No account needed.
         </p>
 
         <form onSubmit={onSubmit} className="mx-auto mt-6 flex max-w-xl gap-2">
@@ -82,7 +92,7 @@ export default function CheckPage() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="e.g. space heater, power bank, stroller"
+              placeholder="e.g. space heater, infant formula, Honda Civic 2018"
               className="w-full rounded-xl border border-border bg-surface py-3 pl-9 pr-3 text-sm text-fg outline-none placeholder:text-muted/70 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
@@ -115,39 +125,42 @@ export default function CheckPage() {
         <div className="mx-auto mt-10 max-w-3xl">
           {resp.count > 0 ? (
             <>
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex flex-wrap items-center gap-2 text-sm">
                 <Badge tone="red"><Ban className="h-3.5 w-3.5" /> {resp.count} recall{resp.count > 1 ? "s" : ""} found</Badge>
-                <span className="text-muted">for &ldquo;{resp.query}&rdquo;</span>
+                <span className="text-muted">for &ldquo;{resp.query}&rdquo; across {resp.agencies.join(", ")}</span>
               </div>
               <div className="mt-4 space-y-3">
-                {resp.hits.map((h) => (
-                  <Card key={h.recallNumber} className="p-5">
+                {resp.hits.map((h, i) => (
+                  <Card key={`${h.ref}-${i}`} className="p-5">
                     <div className="flex items-start justify-between gap-3">
-                      <h3 className="font-semibold text-fg">{h.product || h.title}</h3>
-                      {h.recallDate && <span className="shrink-0 text-xs text-muted">{h.recallDate}</span>}
+                      <h3 className="font-semibold text-fg">{h.title}</h3>
+                      <Badge tone={agencyTone(h.agency)} className="shrink-0">{AGENCY_LABEL[h.agency]}</Badge>
                     </div>
                     {h.hazard && (
-                      <p className="mt-2 text-sm text-fg2"><span className="font-medium text-red-700">Hazard:</span> {h.hazard}</p>
+                      <p className="mt-2 text-sm text-fg2"><span className="font-medium text-red-700">Reason:</span> {h.hazard}</p>
                     )}
                     {h.remedy && (
                       <p className="mt-1 text-sm text-fg2"><span className="font-medium">Remedy:</span> {h.remedy}</p>
                     )}
-                    {h.url && (
-                      <a
-                        href={h.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 hover:text-brand-800"
-                      >
-                        Read the official CPSC notice <ExternalLink className="h-3.5 w-3.5" />
-                      </a>
-                    )}
+                    <div className="mt-3 flex items-center gap-3 text-xs text-muted">
+                      {h.date && <span>{h.date}</span>}
+                      {h.url && (
+                        <a
+                          href={h.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 font-medium text-brand-700 hover:text-brand-800"
+                        >
+                          Official notice <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      )}
+                    </div>
                   </Card>
                 ))}
               </div>
               <p className="mt-5 text-center text-xs text-muted">
-                {resp.source === "live" ? "Searched the live U.S. CPSC recall database." : "Searched the ingested CPSC feed."}{" "}
-                A recall can be added any time, so always confirm at CPSC.gov.
+                Searched the live CPSC, FDA, and NHTSA recall databases. A recall can be issued at any time, so always
+                confirm with the agency.
               </p>
             </>
           ) : (
@@ -155,10 +168,10 @@ export default function CheckPage() {
               <CheckCircle2 className="mx-auto h-10 w-10 text-brand-600" />
               <h3 className="mt-3 text-lg font-semibold text-fg">No recall found for &ldquo;{resp.query}&rdquo;</h3>
               <p className="mx-auto mt-2 max-w-md text-sm text-muted">
-                Good news, nothing matched in the CPSC database. This is a search, not a guarantee, so if you are
-                unsure, check{" "}
-                <a href="https://www.cpsc.gov/Recalls" target="_blank" rel="noopener noreferrer" className="font-medium text-brand-700 underline">
-                  CPSC.gov/Recalls
+                Good news, nothing matched across CPSC, FDA, or NHTSA. This is a search, not a guarantee. For vehicles,
+                try &ldquo;make model year&rdquo; (for example, Honda Civic 2018). When unsure, confirm at{" "}
+                <a href="https://www.recalls.gov" target="_blank" rel="noopener noreferrer" className="font-medium text-brand-700 underline">
+                  Recalls.gov
                 </a>.
               </p>
             </Card>

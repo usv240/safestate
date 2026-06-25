@@ -95,9 +95,9 @@ export default function Home() {
         <Card className="flex flex-col items-center gap-5 p-8 text-center sm:flex-row sm:justify-between sm:text-left" interactive>
           <div>
             <Eyebrow>For everyone</Eyebrow>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-fg">Is a product in your home recalled?</h2>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-fg">Is something in your home recalled?</h2>
             <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-muted">
-              Check any product, new or secondhand, against the live U.S. CPSC recall database. Every category, free, no account.
+              Check any product, food, drug, or vehicle against the live CPSC, FDA, and NHTSA recall databases at once. Free, no account.
             </p>
           </div>
           <Link href="/check" className={buttonClass("primary", "lg", "shrink-0")}>

@@ -133,3 +133,60 @@ export async function getActivity(): Promise<{
     return { stats: empty, recent: [] };
   }
 }
+
+// ── Safety Receipts: durable, verifiable proof of a check ──────────────
+
+export interface Receipt {
+  id: string;
+  model: string;
+  serial: string | null;
+  status: "BLOCKED" | "CLEAR" | "UNKNOWN";
+  hazard?: string;
+  remedy?: string;
+  source?: string;
+  checkedAt: string;
+  hash: string;
+}
+
+/** Store a receipt. Unlike the firehose, this is durable proof, kept a year. */
+export async function putReceipt(r: Receipt): Promise<void> {
+  const ttl = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365;
+  await getDoc().send(
+    new PutCommand({
+      TableName: TABLE,
+      Item: {
+        pk: `RCPT#${r.id}`,
+        sk: "RCPT",
+        id: r.id,
+        model: r.model,
+        serial: r.serial,
+        status: r.status,
+        hazard: r.hazard,
+        remedy: r.remedy,
+        source: r.source,
+        checkedAt: r.checkedAt,
+        hash: r.hash,
+        ttl,
+      },
+    }),
+  );
+}
+
+export async function getReceipt(id: string): Promise<Receipt | null> {
+  const res = await getDoc().send(
+    new GetCommand({ TableName: TABLE, Key: { pk: `RCPT#${id}`, sk: "RCPT" } }),
+  );
+  const i = res.Item;
+  if (!i) return null;
+  return {
+    id: String(i.id),
+    model: String(i.model),
+    serial: i.serial != null ? String(i.serial) : null,
+    status: i.status as Receipt["status"],
+    hazard: i.hazard != null ? String(i.hazard) : undefined,
+    remedy: i.remedy != null ? String(i.remedy) : undefined,
+    source: i.source != null ? String(i.source) : undefined,
+    checkedAt: String(i.checkedAt),
+    hash: String(i.hash),
+  };
+}

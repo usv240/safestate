@@ -4,9 +4,10 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
-import { Ban, CheckCircle2, CircleHelp, Loader2, Copy, Check, ShieldCheck } from "lucide-react";
-import { Button, Card, Container, Eyebrow, cn } from "@/components/ui";
-import { apiGet } from "@/lib/client/api";
+import Link from "next/link";
+import { Ban, CheckCircle2, CircleHelp, Loader2, Copy, Check, ShieldCheck, FileText } from "lucide-react";
+import { Button, buttonClass, Card, Container, Eyebrow, cn } from "@/components/ui";
+import { apiGet, apiPost } from "@/lib/client/api";
 
 interface VerifyResult {
   model: string;
@@ -146,6 +147,19 @@ function Verdict({ result, onCopy, copied }: { result: VerifyResult; onCopy: (u:
   const clear = result.status === "CLEAR";
   const when = new Date(result.checkedAt).toLocaleString();
   const sourceIsUrl = result.source ? /^https?:\/\//i.test(result.source) : false;
+  const [receipt, setReceipt] = useState<{ id: string } | null>(null);
+  const [minting, setMinting] = useState(false);
+
+  async function mint() {
+    setMinting(true);
+    try {
+      setReceipt(await apiPost<{ id: string }>("/api/receipt", { model: result.model, serial: result.serial }));
+    } catch {
+      /* ignore */
+    } finally {
+      setMinting(false);
+    }
+  }
 
   return (
     <div className="space-y-5">
@@ -238,6 +252,27 @@ function Verdict({ result, onCopy, copied }: { result: VerifyResult; onCopy: (u:
               </Button>
             </div>
           </div>
+        </div>
+      </Card>
+
+      {/* Save a durable receipt (stored in DynamoDB) */}
+      <Card className="p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="text-sm font-semibold text-fg">Save a Safety Receipt</div>
+            <p className="mt-1 text-xs leading-relaxed text-muted">
+              A durable, timestamped proof of this check you can show later, stored in Amazon DynamoDB.
+            </p>
+          </div>
+          {receipt ? (
+            <Link href={`/receipt/${receipt.id}`} className={buttonClass("secondary", "sm", "shrink-0")}>
+              View receipt
+            </Link>
+          ) : (
+            <Button variant="secondary" size="sm" onClick={mint} disabled={minting}>
+              {minting ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />} Save receipt
+            </Button>
+          )}
         </div>
       </Card>
     </div>

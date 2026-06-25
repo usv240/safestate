@@ -8,6 +8,7 @@ import { cn } from "@/components/ui";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const links = [
+  { href: "/check", label: "Check" },
   { href: "/gate", label: "Gate" },
   { href: "/scan", label: "Scan" },
   { href: "/verify", label: "Verify" },

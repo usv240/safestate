@@ -1,0 +1,17 @@
+import type { NextRequest } from "next/server";
+import { searchRecalls } from "@/lib/cpsc/search";
+
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+
+export async function GET(request: NextRequest) {
+  const q = (new URL(request.url).searchParams.get("q") ?? "").trim();
+  if (!q) return Response.json({ error: "q is required" }, { status: 400 });
+  if (q.length > 120) return Response.json({ error: "query too long" }, { status: 400 });
+  try {
+    const { hits, source } = await searchRecalls(q);
+    return Response.json({ query: q, source, count: hits.length, hits });
+  } catch (e) {
+    return Response.json({ error: (e as Error).message }, { status: 500 });
+  }
+}

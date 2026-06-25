@@ -11,6 +11,12 @@ import {
   Radio,
   ScanLine,
   Building2,
+  Search,
+  ListChecks,
+  Database,
+  Sparkles,
+  Code,
+  BookOpen,
 } from "lucide-react";
 import { apiGet } from "@/lib/client/api";
 import { Badge, buttonClass, Card, Container, Eyebrow } from "@/components/ui";
@@ -130,12 +136,54 @@ export default function Home() {
       </Container>
 
       {/* Personas */}
-      <Container className="py-8 pb-16">
+      <Container className="py-8">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Persona icon={<ShieldCheck className="h-5 w-5" />} title="Anyone" body="Check any product for a recall, then share a verdict that travels with the item." href="/verify" cta="Safe Handoff" />
           <Persona icon={<Building2 className="h-5 w-5" />} title="Marketplaces" body="Check safety at listing and checkout. Block recalled units automatically." href="/gate" cta="Marketplace Gate" />
           <Persona icon={<Megaphone className="h-5 w-5" />} title="Manufacturers" body="Issue precise recalls by serial range and reach current owners." href="/console" cta="Manufacturer Console" />
           <Persona icon={<ScanLine className="h-5 w-5" />} title="Owners" body="A safety passport that follows the product through every resale." href="/passport" cta="Safety Passport" />
+        </div>
+      </Container>
+
+      {/* Explore everything — open for judges */}
+      <Container className="py-8 pb-16">
+        <Eyebrow>Explore</Eyebrow>
+        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-fg">The full system, open to explore</h2>
+        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted">
+          Every surface is live and public. Click into any of them. Two AWS databases underneath: Aurora DSQL for the
+          transactional core, DynamoDB for the activity firehose.
+        </p>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { Icon: Search, title: "Is it recalled?", desc: "Search any product, food, drug, or vehicle across CPSC, FDA, and NHTSA.", href: "/check" },
+            { Icon: ShieldCheck, title: "Safe Handoff", desc: "Public per-unit check with a shareable link, QR, and a saved receipt.", href: "/verify" },
+            { Icon: Ban, title: "Marketplace Gate", desc: "Authorize or block a sale in real time, down to the serial number.", href: "/gate" },
+            { Icon: ListChecks, title: "Recall Exposure Scan", desc: "Check a whole catalog at once and see its recall exposure.", href: "/scan" },
+            { Icon: Megaphone, title: "Manufacturer Console", desc: "Issue a recall by model, lot, serial range, or a single unit.", href: "/console" },
+            { Icon: ScanLine, title: "Safety Passport", desc: "A per-unit safety history that follows the product to its current owner.", href: "/passport" },
+            { Icon: Radio, title: "Live Consistency Lab", desc: "Run the multi-region and concurrency guarantees against the live cluster.", href: "/live" },
+            { Icon: Database, title: "Recall Feed", desc: "Real recalls ingested daily from the public CPSC API.", href: "/recalls" },
+            { Icon: Sparkles, title: "AI Match", desc: "Claude maps a messy listing to the right recall, with a confidence score.", href: "/match" },
+            { Icon: Code, title: "Developer API", desc: "The drop-in integration surface: scan, verify, and the gate.", href: "/developers" },
+            { Icon: BookOpen, title: "How it works", desc: "The architecture, the databases, and the consistency guarantee.", href: "/how-it-works" },
+          ].map(({ Icon, title, desc, href }) => (
+            <Link
+              key={href}
+              href={href}
+              className="group flex items-start gap-3 rounded-xl border border-border/70 bg-surface/90 p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift"
+            >
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface2 text-fg2 transition-colors group-hover:text-brand-700">
+                <Icon className="h-[18px] w-[18px]" />
+              </span>
+              <span className="min-w-0">
+                <span className="flex items-center gap-1 font-semibold text-fg">
+                  {title}
+                  <ArrowRight className="h-3.5 w-3.5 text-brand-600 opacity-0 transition-opacity group-hover:opacity-100" />
+                </span>
+                <span className="mt-0.5 block text-sm leading-relaxed text-muted">{desc}</span>
+              </span>
+            </Link>
+          ))}
         </div>
       </Container>
     </main>

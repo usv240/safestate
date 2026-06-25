@@ -84,9 +84,14 @@ function fmtFdaDate(d?: string): string {
 }
 
 async function searchFda(kind: "food" | "drug", q: string, limit: number): Promise<RecallHit[]> {
+  // Require every significant term (AND of exact terms) so "infant formula" does
+  // not match a tuna salad whose description merely contains "formula".
+  const terms = q.toLowerCase().split(/\s+/).filter((t) => t.length >= 3);
+  if (!terms.length) return [];
+  const expr = terms.map((t) => `product_description:%22${encodeURIComponent(t)}%22`).join("+AND+");
   try {
     const data = (await fetchJson(
-      `https://api.fda.gov/${kind}/enforcement.json?search=product_description:${encodeURIComponent(q)}&limit=${limit}`,
+      `https://api.fda.gov/${kind}/enforcement.json?search=${expr}&limit=${limit}`,
     )) as FdaRaw;
     return (data.results ?? []).map((r) => ({
       agency: "FDA" as const,
@@ -149,14 +154,20 @@ export async function searchAllSources(
   const q = query.trim();
   if (!q) return { hits: [], agencies: [] };
 
-  const [cpsc, food, drug, nhtsa] = await Promise.all([
+  // A vehicle query (make model year) goes to NHTSA only, so it does not pull
+  // unrelated food or product matches. Fall back to the others if NHTSA is empty.
+  if (parseVehicle(q)) {
+    const nhtsa = await searchNhtsa(q, perSource * 2);
+    if (nhtsa.length) return { hits: nhtsa, agencies: ["NHTSA"] };
+  }
+
+  const [cpsc, food, drug] = await Promise.all([
     searchCpsc(q, perSource),
     searchFda("food", q, perSource),
     searchFda("drug", q, perSource),
-    searchNhtsa(q, perSource),
   ]);
 
-  const hits = [...cpsc, ...food, ...drug, ...nhtsa];
+  const hits = [...cpsc, ...food, ...drug];
   const agencies = Array.from(new Set(hits.map((h) => h.agency)));
   return { hits, agencies };
 }

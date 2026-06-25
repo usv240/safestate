@@ -15,6 +15,8 @@ const links = [
   { href: "/console", label: "Console" },
   { href: "/passport", label: "Passport" },
   { href: "/live", label: "Live" },
+  { href: "/recalls", label: "Recalls" },
+  { href: "/match", label: "Match" },
 ];
 
 export function Nav() {
@@ -32,7 +34,7 @@ export function Nav() {
         </Link>
 
         <div className="flex items-center gap-2">
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="hidden items-center gap-1 lg:flex">
             {links.map((l) => {
               const active = pathname === l.href;
               return (
@@ -55,7 +57,7 @@ export function Nav() {
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
             aria-expanded={open}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-fg2 transition-colors hover:bg-surface2 hover:text-fg md:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-fg2 transition-colors hover:bg-surface2 hover:text-fg lg:hidden"
           >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
@@ -63,7 +65,7 @@ export function Nav() {
       </div>
 
       {open && (
-        <nav className="border-t border-border/70 glass md:hidden">
+        <nav className="border-t border-border/70 glass lg:hidden">
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3">
             {links.map((l) => {
               const active = pathname === l.href;

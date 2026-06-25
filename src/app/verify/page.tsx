@@ -7,6 +7,7 @@ import { QRCodeSVG } from "qrcode.react";
 import Link from "next/link";
 import { Ban, CheckCircle2, CircleHelp, Loader2, Copy, Check, ShieldCheck, FileText } from "lucide-react";
 import { Button, buttonClass, Card, Container, Eyebrow, cn } from "@/components/ui";
+import { InfoHint } from "@/components/InfoHint";
 import { apiGet, apiPost } from "@/lib/client/api";
 
 interface VerifyResult {
@@ -111,9 +112,12 @@ function VerifyInner() {
               placeholder="100"
               className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3 py-2.5 font-mono text-sm text-fg outline-none placeholder:text-muted/70 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             />
-            <Button type="submit" className="mt-4 w-full" disabled={busy || !model.trim()}>
-              {busy ? <><Loader2 className="h-4 w-4 animate-spin" /> Checking…</> : "Check this product"}
-            </Button>
+            <div className="mt-4 flex items-center gap-2">
+              <Button type="submit" className="flex-1" disabled={busy || !model.trim()}>
+                {busy ? <><Loader2 className="h-4 w-4 animate-spin" /> Checking…</> : "Check this product"}
+              </Button>
+              <InfoHint text="Checks this exact unit against live recall state, then lets you share a link plus QR and save a durable receipt. No account needed." />
+            </div>
             {err && <p className="mt-3 text-sm text-red-700">{err}</p>}
             <p className="mt-4 text-xs leading-relaxed text-muted">
               Try <button type="button" className="font-medium text-brand-700 underline" onClick={() => { setModel("DreamNest Bassinet"); setSerial("100"); }}>a recalled unit</button>
@@ -269,9 +273,12 @@ function Verdict({ result, onCopy, copied }: { result: VerifyResult; onCopy: (u:
               View receipt
             </Link>
           ) : (
-            <Button variant="secondary" size="sm" onClick={mint} disabled={minting}>
-              {minting ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />} Save receipt
-            </Button>
+            <span className="inline-flex items-center gap-2">
+              <Button variant="secondary" size="sm" onClick={mint} disabled={minting}>
+                {minting ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />} Save receipt
+              </Button>
+              <InfoHint text="Re-checks the unit server-side and stores a permanent, hashed receipt in DynamoDB. Proof you can show later that you checked." />
+            </span>
           )}
         </div>
       </Card>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ScanLine, Loader2, Ban, CheckCircle2, CircleHelp, Sparkles } from "lucide-react";
 import { apiGet, apiPost } from "@/lib/client/api";
 import { Badge, Button, Card, Container, Eyebrow, cn } from "@/components/ui";
+import { InfoHint } from "@/components/InfoHint";
 
 interface ScanRow {
   model: string;
@@ -114,6 +115,9 @@ export default function ScanPage() {
               <Button size="sm" onClick={scan} disabled={busy !== null || !text.trim()}>
                 {busy === "scan" ? <><Loader2 className="h-4 w-4 animate-spin" /> Scanning…</> : <>Scan catalog</>}
               </Button>
+              <span className="flex items-center">
+                <InfoHint text="Evaluates every row against live recall state in two queries, serial by serial, and returns a per-unit verdict plus a summary of your recall exposure." />
+              </span>
             </div>
             {err && <p className="mt-3 text-sm text-red-700">{err}</p>}
           </Card>

@@ -6,6 +6,7 @@ import { apiGet, apiPost } from "@/lib/client/api";
 import { Badge, Button, Card, Container, Eyebrow } from "@/components/ui";
 import { InfoButton } from "@/components/InfoButton";
 import { GuidedTour } from "@/components/GuidedTour";
+import { InfoHint } from "@/components/InfoHint";
 import { ReachBack } from "@/components/ReachBack";
 
 interface Block { key: string; title: string | null; body_md: string | null }
@@ -109,12 +110,15 @@ export default function ConsolePage() {
                 <Megaphone className="h-4.5 w-4.5 text-brand-600" /> Issue a safety directive
                 <InfoButton topicId="console.scope" />
               </h2>
-              <button
-                onClick={loadDemoRecall}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 hover:underline"
-              >
-                <Wand2 className="h-3.5 w-3.5" /> Load demo recall
-              </button>
+              <span className="inline-flex items-center gap-1.5">
+                <button
+                  onClick={loadDemoRecall}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 hover:underline"
+                >
+                  <Wand2 className="h-3.5 w-3.5" /> Load demo recall
+                </button>
+                <InfoHint text="Fills the form with a realistic recall: serials 1 to 999, with a hazard and remedy. Then click Publish." />
+              </span>
             </div>
 
             <div className="mt-5 grid gap-3.5">
@@ -145,9 +149,12 @@ export default function ConsolePage() {
               </Row>
             </div>
 
-            <Button variant="danger" className="mt-6 w-full" onClick={submit} disabled={busy || !modelId}>
-              {busy ? <><Loader2 className="h-4 w-4 animate-spin" /> Publishing…</> : <><Send className="h-4 w-4" /> Publish directive</>}
-            </Button>
+            <div className="mt-6 flex items-center gap-2">
+              <Button variant="danger" className="flex-1" onClick={submit} disabled={busy || !modelId}>
+                {busy ? <><Loader2 className="h-4 w-4 animate-spin" /> Publishing…</> : <><Send className="h-4 w-4" /> Publish directive</>}
+              </Button>
+              <InfoHint text="Writes the recall in one Aurora DSQL transaction, bumps the model's safety epoch, and notifies the current owners. Every marketplace gate sees it the instant it commits." />
+            </div>
 
             {err && <p className="mt-3 text-sm text-red-700">{err}</p>}
             {result && (

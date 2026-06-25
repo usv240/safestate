@@ -21,6 +21,7 @@ import {
 import { apiGet } from "@/lib/client/api";
 import { Badge, buttonClass, Card, Container, Eyebrow } from "@/components/ui";
 import { InfoButton } from "@/components/InfoButton";
+import { InfoHint } from "@/components/InfoHint";
 
 interface Block { key: string; title: string | null; body_md: string | null }
 interface Stats {
@@ -74,6 +75,9 @@ export default function Home() {
               <Link href="/gate" className={buttonClass("secondary", "lg")}>
                 See the Gate
               </Link>
+              <span className="flex items-center">
+                <InfoHint text="A guided 5-step path: issue a recall, watch it block a sale, see why it needs Aurora DSQL, then check anything across CPSC, FDA, and NHTSA." />
+              </span>
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted">
               <span className="inline-flex items-center gap-1.5">

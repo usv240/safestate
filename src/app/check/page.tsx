@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { Search, Loader2, Ban, CheckCircle2, ExternalLink } from "lucide-react";
 import { apiGet } from "@/lib/client/api";
 import { Badge, Button, Card, Container, Eyebrow } from "@/components/ui";
+import { InfoHint } from "@/components/InfoHint";
 
 type Agency = "CPSC" | "FDA" | "NHTSA";
 interface RecallHit {
@@ -99,6 +100,9 @@ export default function CheckPage() {
           <Button type="submit" disabled={busy || !q.trim()}>
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Check"}
           </Button>
+          <span className="flex items-center">
+            <InfoHint text="Searches the live CPSC, FDA, and NHTSA recall databases at once. Vehicle queries like “Honda Civic 2018” route to NHTSA." />
+          </span>
         </form>
 
         <div className="mt-3 flex flex-wrap justify-center gap-2">

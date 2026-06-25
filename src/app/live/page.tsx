@@ -15,6 +15,7 @@ import {
 import { apiGet, apiPost } from "@/lib/client/api";
 import { Badge, Button, Card, Container, Eyebrow, cn } from "@/components/ui";
 import { InfoButton } from "@/components/InfoButton";
+import { InfoHint } from "@/components/InfoHint";
 
 interface RegionInfo {
   regionA: string;
@@ -131,9 +132,12 @@ export default function LivePage() {
               epoch={cr?.epoch ?? 0}
             />
 
-            <Button className="mt-6" onClick={runCrossRegion} disabled={busy === "cr"}>
-              {busy === "cr" ? <><Loader2 className="h-4 w-4 animate-spin" /> Running…</> : <><Zap className="h-4 w-4" /> Write to Region A → read from Region B</>}
-            </Button>
+            <div className="mt-6 flex items-center gap-2">
+              <Button className="flex-1" onClick={runCrossRegion} disabled={busy === "cr"}>
+                {busy === "cr" ? <><Loader2 className="h-4 w-4 animate-spin" /> Running…</> : <><Zap className="h-4 w-4" /> Write to Region A → read from Region B</>}
+              </Button>
+              <InfoHint text="Commits a recall through the us-east-1 endpoint, then reads the same row from the us-east-2 endpoint. With DSQL strong consistency, Region B sees it immediately — no replication-lag window." />
+            </div>
 
             {cr && (
               <div
@@ -180,9 +184,12 @@ export default function LivePage() {
               <p className="mt-3 text-xs text-muted">{conf.winner}. The winner varies each run — a real race, not a script.</p>
             )}
 
-            <Button className="mt-6" onClick={runConflict} disabled={busy === "conf"}>
-              {busy === "conf" ? <><Loader2 className="h-4 w-4 animate-spin" /> Running…</> : <><Zap className="h-4 w-4" /> Fire two conflicting transactions</>}
-            </Button>
+            <div className="mt-6 flex items-center gap-2">
+              <Button className="flex-1" onClick={runConflict} disabled={busy === "conf"}>
+                {busy === "conf" ? <><Loader2 className="h-4 w-4 animate-spin" /> Running…</> : <><Zap className="h-4 w-4" /> Fire two conflicting transactions</>}
+              </Button>
+              <InfoHint text="Runs two real transactions in parallel that both write the same guard row. DSQL's optimistic concurrency lets one commit and rejects the other with SQLSTATE 40001. The winner varies each run — a genuine race." />
+            </div>
 
             {conf?.loser && (
               <div className="mt-4 rounded-xl border border-border bg-surface2 p-3.5 animate-fade-up">
@@ -205,13 +212,16 @@ export default function LivePage() {
             Fire 100 concurrent sale attempts at a recalled unit, against the live multi-region cluster. Every one must
             be blocked — no amount of concurrency may let a recalled unit sell.
           </p>
-          <Button className="mt-5" onClick={runLoad} disabled={busy === "load"}>
-            {busy === "load" ? (
-              <><Loader2 className="h-4 w-4 animate-spin" /> Running 100 concurrent attempts…</>
-            ) : (
-              <><Zap className="h-4 w-4" /> Run the stress test</>
-            )}
-          </Button>
+          <div className="mt-5 flex items-center gap-2">
+            <Button onClick={runLoad} disabled={busy === "load"}>
+              {busy === "load" ? (
+                <><Loader2 className="h-4 w-4 animate-spin" /> Running 100 concurrent attempts…</>
+              ) : (
+                <><Zap className="h-4 w-4" /> Run the stress test</>
+              )}
+            </Button>
+            <InfoHint text="Fires 100 concurrent sale attempts at a recalled unit against the live cluster, then reports throughput and latency. Every attempt must be blocked: zero recalled units may sell under load." />
+          </div>
 
           {load && (
             <>

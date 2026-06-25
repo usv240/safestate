@@ -5,6 +5,7 @@ import { Ban, CheckCircle2, RotateCcw, Baby, Loader2, AlertTriangle } from "luci
 import { apiGet, apiPost } from "@/lib/client/api";
 import { Badge, Button, Card, Container, Eyebrow } from "@/components/ui";
 import { InfoButton } from "@/components/InfoButton";
+import { InfoHint } from "@/components/InfoHint";
 import { GuidedTour } from "@/components/GuidedTour";
 
 interface Block { key: string; title: string | null; body_md: string | null }
@@ -99,9 +100,12 @@ export default function GatePage() {
               {b("gate.explainer")?.body_md ?? ""}
             </p>
           </div>
-          <Button variant="secondary" size="sm" onClick={reset}>
-            <RotateCcw className="h-4 w-4" /> Reset demo
-          </Button>
+          <span className="inline-flex items-center gap-2">
+            <Button variant="secondary" size="sm" onClick={reset}>
+              <RotateCcw className="h-4 w-4" /> Reset demo
+            </Button>
+            <InfoHint text="Restores the demo to its known-good state: the canonical recall re-issued and both units back in place. Safe to click anytime." />
+          </span>
         </div>
 
         {recallRange && (
@@ -138,18 +142,21 @@ export default function GatePage() {
                   <p className="mt-1 text-sm text-muted">
                     {l.condition} · <span className="font-mono text-xs">serial {l.serial}</span>
                   </p>
-                  <Button
-                    className="mt-4 w-full"
-                    variant={recalled ? "secondary" : "primary"}
-                    onClick={() => buy(l)}
-                    disabled={busy === l.instanceId}
-                  >
-                    {busy === l.instanceId ? (
-                      <><Loader2 className="h-4 w-4 animate-spin" /> Checking safety…</>
-                    ) : (
-                      "Buy now"
-                    )}
-                  </Button>
+                  <div className="mt-4 flex items-center gap-2">
+                    <Button
+                      className="flex-1"
+                      variant={recalled ? "secondary" : "primary"}
+                      onClick={() => buy(l)}
+                      disabled={busy === l.instanceId}
+                    >
+                      {busy === l.instanceId ? (
+                        <><Loader2 className="h-4 w-4 animate-spin" /> Checking safety…</>
+                      ) : (
+                        "Buy now"
+                      )}
+                    </Button>
+                    <InfoHint text="Calls authorize-transfer: one Aurora DSQL transaction that checks this exact serial against active recalls and records the decision. Blocked if recalled, authorized if not." />
+                  </div>
                 </div>
               </Card>
             );

@@ -48,7 +48,7 @@ function dsqlConfig(hostname: string, region: string): PoolConfig {
       user === "admin"
         ? await signer.getDbConnectAdminAuthToken()
         : await signer.getDbConnectAuthToken(),
-    max: Number(process.env.DB_POOL_MAX || 5),
+    max: Number(process.env.DB_POOL_MAX || 10),
     idleTimeoutMillis: 30_000,
   };
 }
@@ -58,7 +58,7 @@ function localConfig(): PoolConfig {
     connectionString:
       process.env.DATABASE_URL ||
       "postgres://postgres:postgres@localhost:5432/safestate",
-    max: Number(process.env.DB_POOL_MAX || 5),
+    max: Number(process.env.DB_POOL_MAX || 10),
   };
 }
 

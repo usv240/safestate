@@ -80,9 +80,12 @@ export async function authorizeTransfer(input: AuthorizeInput): Promise<Authoriz
     if (!inst.rowCount) throw new Error(`instance not found: ${input.instanceId}`);
     const { model_id, serial, current_owner_id } = inst.rows[0];
 
-    // 3) Read the authoritative guard row (epoch + OCC participation).
+    // 3) Read the guard epoch. The conflict-forcing write is the UPDATE on the
+    //    AUTHORIZED path below — a plain read here, so concurrent BLOCKED checks
+    //    on the same model do not falsely contend, while a real recall (which
+    //    UPDATEs this row) still collides with an AUTHORIZED sale.
     const guard = await client.query(
-      "SELECT epoch FROM safety_guard WHERE model_id = $1 FOR UPDATE",
+      "SELECT epoch FROM safety_guard WHERE model_id = $1",
       [model_id],
     );
     if (!guard.rowCount) throw new Error(`no safety_guard for model ${model_id}`);

@@ -4,12 +4,13 @@ SafeState is a Next.js app on Vercel with Amazon Aurora DSQL as the primary data
 
 ## Components
 
-- **UI** (Next.js, on Vercel): the Gate, Console, Passport, Live lab, Recalls feed, and Match pages.
-- **API routes** (Next.js route handlers, on Vercel): the safety decision, recall publishing, the bulk catalog scan, and data reads. They connect to DSQL over the Postgres protocol using short-lived IAM tokens.
-- **Daily Cron** (Vercel Cron): ingests real recalls from the public CPSC API once a day.
+- **UI** (Next.js, on Vercel): the Gate, the public Check, Safe Handoff (Verify), the Scan, the Console, the Passport, the Live lab, the Recalls feed, the Match assistant, and the Developer API page.
+- **API routes** (Next.js route handlers, on Vercel): the safety decision, recall publishing, the bulk catalog scan, the public multi-source check, durable receipts, owner notifications, and data reads. They connect to DSQL over the Postgres protocol using short-lived IAM tokens.
+- **Daily Cron** (Vercel Cron): ingests real recalls from the public CPSC API once a day. The public check also queries CPSC, FDA, and NHTSA live.
 - **Aurora DSQL**: a multi-region, active-active cluster in us-east-1 and us-east-2 with a witness in us-west-2. Owns all transactional safety state.
-- **DynamoDB**: the append-only activity firehose (checks, verifies, scans, decisions) and live counters. A different workload that does not need a distributed transaction. See [ADR-0008](adr/0008-dynamodb-activity-firehose.md).
+- **DynamoDB**: the append-only activity firehose (checks, verifies, scans, decisions), the live counters, and the durable Safety Receipts. A different workload that does not need a distributed transaction. See [ADR-0008](adr/0008-dynamodb-activity-firehose.md).
 - **Claude**: maps free-text secondhand listings to the right recall, with a confidence score.
+- **Email (Resend)**: when a recall is issued, the current owners of affected units are notified.
 
 ## System diagram
 
@@ -28,23 +29,25 @@ flowchart LR
     B["Region B (us-east-2)"]
   end
 
-  CPSC["CPSC Recall API"]
+  DDB["Amazon DynamoDB (activity + receipts)"]
+  Recalls["CPSC · FDA · NHTSA recall APIs"]
   Claude["Claude"]
-  DDB["Amazon DynamoDB (activity firehose)"]
+  Email["Email (Resend)"]
 
   Users --> UI --> API
   API -->|"IAM token, Postgres"| A
   API -->|"IAM token, Postgres"| B
   A <-->|"active-active, strong consistency"| B
-  API -->|"append-only events"| DDB
-  Cron --> CPSC
-  Cron --> API
+  API -->|"events, receipts"| DDB
+  API -->|"notify current owners"| Email
+  API -->|"check anything"| Recalls
+  Cron --> Recalls
   API -->|"match listings"| Claude
 ```
 
 ## Two databases, on purpose
 
-Aurora DSQL is the primary database and owns every transactional safety decision, where strong cross-region consistency is the product. DynamoDB owns the high-volume, append-only activity stream (checks, verifies, scans, decisions), which is write-heavy and does not need a distributed transaction. Each workload sits on the database that fits it. See [ADR-0008](adr/0008-dynamodb-activity-firehose.md).
+Aurora DSQL is the primary database and owns every transactional safety decision, where strong cross-region consistency is the product. DynamoDB owns the high-volume, append-only activity stream (checks, verifies, scans, decisions), the live counters, and the durable Safety Receipts. That workload is write-heavy, key-accessed, and does not need a distributed transaction. Each workload sits on the database that fits it. See [ADR-0008](adr/0008-dynamodb-activity-firehose.md).
 
 ## The safety decision
 
@@ -82,6 +85,18 @@ A recall and a sale naturally touch different rows, so without help they could b
 
 The cluster is peered across us-east-1 and us-east-2, both active for reads and writes, with a witness in us-west-2 that holds the log for quorum but serves no application traffic. A recall written through one region's endpoint is immediately readable from the other. The Live lab page lets you run this yourself against the live cluster.
 
+## Correctness under load
+
+The Live lab fires 100 concurrent sale attempts at a recalled unit against the live cluster. Every attempt must be blocked, and zero recalled units may sell, regardless of concurrency. The optimistic-concurrency race runs the two transactions in genuine parallel, so the winner varies from run to run.
+
+## Checking any product (CPSC, FDA, NHTSA)
+
+The public check is not limited to the registry. It searches three live federal databases at once: CPSC for consumer products, FDA for food, drugs, and cosmetics, and NHTSA for vehicles. A vehicle query (make, model, year) is routed to NHTSA only; everything else fans out to CPSC and FDA in parallel. Each source is best-effort, so one being slow never blocks the others.
+
+## Reaching the owner
+
+When a recall is issued, SafeState walks live ownership to find the current owners of affected units, not just the original buyers, and notifies them. Notifications are best-effort and never block the recall: a real email is sent when an email provider is configured, and every dispatch is recorded either way.
+
 ## Data model
 
 The full schema lives in [db/migrations](../db/migrations): [001_init.sql](../db/migrations/001_init.sql) for the core tables and [002_cpsc.sql](../db/migrations/002_cpsc.sql) for the recall feed. The central tables:
@@ -91,6 +106,8 @@ The full schema lives in [db/migrations](../db/migrations): [001_init.sql](../db
 - `safety_directives` and `directive_targets` - a recall or repair order and the scope it covers (whole model, a lot, a serial range, or a single unit).
 - `ownership_transfers` and `transfer_attempts` - the record of each sale and an idempotency key per attempt.
 - `cpsc_recalls` - the real recall feed ingested from CPSC.
+
+Activity events and durable Safety Receipts live in Amazon DynamoDB, not in DSQL. See [Two databases, on purpose](#two-databases-on-purpose).
 
 ## Data, auth, and constraints
 

@@ -17,7 +17,7 @@ interface MatchResult {
 interface Review { listing_ref: string; confidence: number; state: string; created_at: string }
 
 const EXAMPLES = [
-  "Used baby bassinet, sleeps great, the side mesh rail folds down — DreamNest style, serial around 100.",
+  "Used baby bassinet, sleeps great, the side mesh rail folds down, DreamNest style, serial around 100.",
   "Vintage wooden toddler bookshelf, solid oak, no issues, picked up from a yard sale.",
   "Infant rocker / sleeper, gently used, works with batteries.",
 ];
@@ -119,7 +119,7 @@ function ResultCard({ r }: { r: MatchResult }) {
   const tone =
     r.decision === "MATCH" ? "red" : r.decision === "REVIEW" ? "amber" : "brand";
   const label =
-    r.decision === "MATCH" ? "Recall match — block listing" : r.decision === "REVIEW" ? "Uncertain — route to review" : "No recall match";
+    r.decision === "MATCH" ? "Recall match, block listing" : r.decision === "REVIEW" ? "Uncertain, route to review" : "No recall match";
   const Icon = r.decision === "CLEAR" ? CheckCircle2 : AlertTriangle;
   const bg = { red: "border-red-200 bg-red-50/70", amber: "border-amber-200 bg-amber-50/70", brand: "border-brand-200 bg-brand-50/70" }[tone];
   const fg = { red: "text-red-800", amber: "text-amber-800", brand: "text-brand-800" }[tone];

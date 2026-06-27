@@ -71,10 +71,10 @@ export default function Developers() {
                 </Contract>
                 <Contract icon={<RefreshCw className="h-4 w-4" />} title="Retry-safe">
                   Conflicts surface as <code className="font-mono text-xs">SQLSTATE 40001 / OC000</code>{" "}
-                  and are retried with backoff — the decision always reflects the latest safety state.
+                  and are retried with backoff, the decision always reflects the latest safety state.
                 </Contract>
                 <Contract icon={<ShieldCheck className="h-4 w-4" />} title="Strongly consistent">
-                  Reads from any region reflect a recall the instant it commits — no stale-safe window.
+                  Reads from any region reflect a recall the instant it commits, no stale-safe window.
                 </Contract>
               </ul>
             </Card>

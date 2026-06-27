@@ -41,7 +41,7 @@ export default function RecallsPage() {
             </h1>
             <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted">
               Nursery and juvenile-product recalls pulled from the public CPSC Recall API by a daily
-              Vercel Cron job. The demo runs off a frozen snapshot — this is the live source.
+              Vercel Cron job. The demo runs off a frozen snapshot, this is the live source.
             </p>
           </div>
           <Badge tone="brand">

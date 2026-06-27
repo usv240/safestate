@@ -49,7 +49,7 @@ export function serialCovered(serial: string | null, row: DirectiveRow): boolean
 
 /**
  * The heart of SafeState. Decides whether a resale/transfer is allowed,
- * precisely (serial-aware), and — crucially — writes the model's safety_guard
+ * precisely (serial-aware), and, crucially, writes the model's safety_guard
  * row on the AUTHORIZED path. That shared write is what makes Aurora DSQL's
  * OCC detect a conflict with a concurrent recall: the loser gets 40001/OC000
  * and the whole transaction retries, re-reading the now-recalled state.
@@ -57,7 +57,7 @@ export function serialCovered(serial: string | null, row: DirectiveRow): boolean
  */
 export async function authorizeTransfer(input: AuthorizeInput): Promise<AuthorizeResult> {
   const outcome = await withTxnRetry<AuthorizeResult>(async (client: PoolClient) => {
-    // 1) Idempotency — a retried HTTP call returns the prior decision, never double-applies.
+    // 1) Idempotency, a retried HTTP call returns the prior decision, never double-applies.
     const prior = await client.query(
       "SELECT decision, reason FROM transfer_attempts WHERE idempotency_key = $1",
       [input.idempotencyKey],
@@ -81,7 +81,7 @@ export async function authorizeTransfer(input: AuthorizeInput): Promise<Authoriz
     const { model_id, serial, current_owner_id } = inst.rows[0];
 
     // 3) Read the guard epoch. The conflict-forcing write is the UPDATE on the
-    //    AUTHORIZED path below — a plain read here, so concurrent BLOCKED checks
+    //    AUTHORIZED path below, a plain read here, so concurrent BLOCKED checks
     //    on the same model do not falsely contend, while a real recall (which
     //    UPDATEs this row) still collides with an AUTHORIZED sale.
     const guard = await client.query(
@@ -124,7 +124,7 @@ export async function authorizeTransfer(input: AuthorizeInput): Promise<Authoriz
       };
     }
 
-    // 5) AUTHORIZED — record transfer, flip ownership, and WRITE the guard row.
+    // 5) AUTHORIZED, record transfer, flip ownership, and WRITE the guard row.
     //    The guard write is the conflict-forcing touch vs. a concurrent recall.
     const transferId = randomUUID();
     await client.query(

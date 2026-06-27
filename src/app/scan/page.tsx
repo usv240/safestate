@@ -167,7 +167,7 @@ export default function ScanPage() {
                               <div className="font-medium text-fg">{r.model}</div>
                               {r.sku && <div className="font-mono text-[11px] text-muted">{r.sku}</div>}
                             </td>
-                            <td className="px-4 py-3 font-mono text-xs text-fg2">{r.serial ?? "—"}</td>
+                            <td className="px-4 py-3 font-mono text-xs text-fg2">{r.serial ?? "-"}</td>
                             <td className="px-4 py-3 text-fg2">
                               {r.status === "BLOCKED" && (
                                 <div>

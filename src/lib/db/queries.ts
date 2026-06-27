@@ -132,7 +132,7 @@ export async function getAffectedOwners(modelId: string): Promise<{
   };
 }
 
-/** Live counts — never fabricated. */
+/** Live counts, never fabricated. */
 export async function getStats() {
   const pool = getPool();
   const r = await pool.query(`

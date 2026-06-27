@@ -4,7 +4,7 @@ import { getProductStatus } from "@/lib/db/queries";
 export const dynamic = "force-dynamic";
 
 /** Backend-driven marketplace listings for the Gate demo. The frontend renders
- *  exactly what this returns — no product data is hardcoded client-side. */
+ *  exactly what this returns, no product data is hardcoded client-side. */
 export async function GET() {
   try {
     const ids = [DEMO.recalledInstanceId, DEMO.safeInstanceId];
@@ -19,7 +19,7 @@ export async function GET() {
         serial: s.instance.serial,
         guardStatus: s.instance.guard_status,
         priceLabel: "$120",
-        condition: "Used – good condition",
+        condition: "Used - good condition",
         directives: s.directives,
       });
     }

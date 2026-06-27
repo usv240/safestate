@@ -10,7 +10,7 @@ export function Footer() {
         </div>
         <div className="flex flex-col items-center justify-between gap-3 text-sm text-muted sm:flex-row">
           <p>
-            SafeState — recalls, made executable. Built on{" "}
+            SafeState, recalls, made executable. Built on{" "}
             <span className="font-medium text-fg2">Amazon Aurora DSQL</span> +{" "}
             <span className="font-medium text-fg2">Amazon DynamoDB</span> +{" "}
             <span className="font-medium text-fg2">Vercel</span>.

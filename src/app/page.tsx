@@ -106,7 +106,7 @@ export default function Home() {
         </div>
       </Container>
 
-      {/* Universal check — for everyone */}
+      {/* Universal check, for everyone */}
       <Container className="py-8">
         <Card className="flex flex-col items-center gap-5 p-8 text-center sm:flex-row sm:justify-between sm:text-left" interactive>
           <div>
@@ -161,7 +161,7 @@ export default function Home() {
         </div>
       </Container>
 
-      {/* Explore everything — open for judges */}
+      {/* Explore everything, open for judges */}
       <Container className="py-8 pb-16">
         <Eyebrow>Explore</Eyebrow>
         <h2 className="mt-2 text-2xl font-semibold tracking-tight text-fg">The full system, open to explore</h2>
@@ -225,7 +225,7 @@ function HeroVisual() {
                 <Ban className="h-5 w-5" />
               </span>
               <div>
-                <div className="text-base font-bold text-red-800">BLOCKED — Unsafe for resale</div>
+                <div className="text-base font-bold text-red-800">BLOCKED, Unsafe for resale</div>
                 <div className="text-sm text-muted">Active recall · source CPSC</div>
               </div>
             </div>
@@ -268,7 +268,7 @@ function Stat({
     <Card className="p-5" interactive>
       <span className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ${toneCls}`}>{icon}</span>
       <div className="mt-3 text-3xl font-semibold tracking-tight text-fg tabular-nums">
-        {value ?? "—"}
+        {value ?? "-"}
       </div>
       <div className="mt-0.5 text-sm text-muted">{label}</div>
     </Card>

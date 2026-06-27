@@ -162,7 +162,7 @@ export default function ConsolePage() {
                 <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
                 <span>
                   Published. Model safety epoch is now <b>{result.newEpoch}</b> (txn attempts {result.attempts}).
-                  Open the Marketplace Gate — affected units are now blocked.
+                  Open the Marketplace Gate, affected units are now blocked.
                   {result.notify && result.notify.owners > 0 && (
                     <>
                       {" "}SafeState notified <b>{result.notify.owners}</b> current owner

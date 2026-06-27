@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "SafeState — recalls, made executable";
+export const alt = "SafeState, recalls, made executable";
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -43,7 +43,7 @@ export default function OpengraphImage() {
           Recalls, made executable.
         </div>
         <div style={{ fontSize: 30, color: "#8a97ad", marginTop: 26, maxWidth: 920 }}>
-          Transaction-time safety authorization for secondhand products — on Amazon Aurora DSQL +
+          Transaction-time safety authorization for secondhand products, on Amazon Aurora DSQL +
           Vercel.
         </div>
       </div>

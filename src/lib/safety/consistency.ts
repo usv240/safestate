@@ -50,7 +50,7 @@ export async function rawConflictProof() {
         },
       };
     }
-    // Both committed (no conflict detected this run) — rare; report honestly.
+    // Both committed (no conflict detected this run), rare; report honestly.
     return { winner: "Both committed (no conflict this run)", loser: null };
   } finally {
     await a.query("ROLLBACK").catch(() => {});
@@ -62,7 +62,7 @@ export async function rawConflictProof() {
 
 /**
  * Correctness under load. Fire N concurrent sale attempts at a RECALLED unit
- * against the live cluster. Every one must be blocked — no level of concurrency
+ * against the live cluster. Every one must be blocked, no level of concurrency
  * may let a recalled unit sell. Reports throughput and latency, and cleans up
  * its own idempotency rows afterward.
  */

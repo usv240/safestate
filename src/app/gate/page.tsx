@@ -112,7 +112,7 @@ export default function GatePage() {
           <div className="mt-6 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50/70 px-4 py-3 text-sm text-amber-900">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
             <span>
-              Active recall covers serials <b>{recallRange.lo}&ndash;{recallRange.hi}</b>. Units in this range are
+              Active recall covers serials <b>{recallRange.lo}-{recallRange.hi}</b>. Units in this range are
               blocked at checkout; units outside it still sell. Try buying both below.
             </span>
           </div>
@@ -186,7 +186,7 @@ function VerdictBanner({ v }: { v: Verdict & { title: string } }) {
         </span>
         <div>
           <div className={`text-xl font-bold ${blocked ? "text-red-800" : "text-brand-800"}`}>
-            {blocked ? "BLOCKED — Unsafe for resale" : "AUTHORIZED — Safe to transfer"}
+            {blocked ? "BLOCKED, Unsafe for resale" : "AUTHORIZED, Safe to transfer"}
           </div>
           <div className="text-sm text-muted">{v.title}</div>
         </div>

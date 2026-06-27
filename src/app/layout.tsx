@@ -9,18 +9,18 @@ import { PageBack } from "@/components/PageBack";
 import { Footer } from "@/components/Footer";
 
 const description =
-  "Transaction-time safety authorization for secondhand products. SafeState makes product recalls executable — blocking recalled items at resale — on Amazon Aurora DSQL.";
+  "Transaction-time safety authorization for secondhand products. SafeState makes product recalls executable, blocking recalled items at resale, on Amazon Aurora DSQL.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://safestate.vercel.app"),
   title: {
-    default: "SafeState — recalls, made executable",
+    default: "SafeState, recalls, made executable",
     template: "%s · SafeState",
   },
   description,
   applicationName: "SafeState",
   openGraph: {
-    title: "SafeState — recalls, made executable",
+    title: "SafeState, recalls, made executable",
     description,
     url: "https://safestate.vercel.app",
     siteName: "SafeState",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SafeState — recalls, made executable",
+    title: "SafeState, recalls, made executable",
     description,
   },
 };

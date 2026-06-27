@@ -114,7 +114,7 @@ export default function PassportPage() {
                         <b>Safety alert sent to {owner}.</b>
                         {active[0].remedy ? ` Remedy: ${active[0].remedy}` : ""}
                         <span className="mt-1 block text-xs text-amber-700">
-                          The manufacturer reached the <i>current</i> owner — not just the original buyer.
+                          The manufacturer reached the <i>current</i> owner, not just the original buyer.
                         </span>
                       </span>
                     </div>
@@ -124,7 +124,7 @@ export default function PassportPage() {
                     <div className="text-xs font-semibold uppercase tracking-wide text-muted">Safety record</div>
                     {p.directives.length === 0 ? (
                       <p className="mt-2 inline-flex items-center gap-1.5 text-sm text-brand-700">
-                        <ShieldCheck className="h-4 w-4" /> Clear record — no safety directives.
+                        <ShieldCheck className="h-4 w-4" /> Clear record, no safety directives.
                       </p>
                     ) : (
                       <ol className="mt-3 space-y-3 border-l-2 border-border pl-5">

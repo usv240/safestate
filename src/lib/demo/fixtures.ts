@@ -6,7 +6,7 @@ export const DEMO = {
   modelName: "DreamNest Bassinet",
   category: "bassinet",
 
-  // Instance whose serial (100) falls INSIDE the recalled range 1–999 → BLOCKED
+  // Instance whose serial (100) falls INSIDE the recalled range 1-999 → BLOCKED
   recalledInstanceId: "33333333-3333-3333-3333-333333333333",
   recalledSerial: "100",
 

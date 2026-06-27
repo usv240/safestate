@@ -184,7 +184,7 @@ function Verdict({ result, onCopy, copied }: { result: VerifyResult; onCopy: (u:
           </span>
           <div>
             <div className={cn("text-xl font-bold", recalled ? "text-red-800" : clear ? "text-brand-800" : "text-amber-800")}>
-              {recalled ? "RECALLED — do not resell" : clear ? "No recall on record" : "Can't confirm yet"}
+              {recalled ? "RECALLED, do not resell" : clear ? "No recall on record" : "Can't confirm yet"}
             </div>
             <div className="text-sm text-muted">
               {result.model}{result.serial ? <> · <span className="font-mono text-xs">serial {result.serial}</span></> : null}
@@ -231,7 +231,7 @@ function Verdict({ result, onCopy, copied }: { result: VerifyResult; onCopy: (u:
         </div>
       </div>
 
-      {/* Share — make the warning travel with the item */}
+      {/* Share, make the warning travel with the item */}
       <Card className="p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <div className="shrink-0 rounded-xl border border-border bg-white p-3">

@@ -64,7 +64,7 @@ function heuristicMatch(text: string, cands: Candidate[]): MatchResult {
 async function aiMatch(text: string, cands: Candidate[], apiKey: string): Promise<MatchResult> {
   const client = new Anthropic({ apiKey });
   const catalog = cands
-    .map((c) => `- ${c.recall_number}: ${c.product} — ${(c.hazard || "").slice(0, 100)}`)
+    .map((c) => `- ${c.recall_number}: ${c.product}, ${(c.hazard || "").slice(0, 100)}`)
     .join("\n");
 
   const schema = {

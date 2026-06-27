@@ -9,7 +9,7 @@ interface Topic {
 }
 
 /** The ubiquitous "ⓘ" control. Help text is fetched from the backend
- *  (help_topics) — never hardcoded in the component. */
+ *  (help_topics), never hardcoded in the component. */
 export function InfoButton({ topicId }: { topicId: string }) {
   const [open, setOpen] = useState(false);
   const [topic, setTopic] = useState<Topic | null>(null);

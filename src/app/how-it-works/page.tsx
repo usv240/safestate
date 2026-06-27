@@ -17,9 +17,9 @@ import { Badge, Card, Container, Eyebrow, buttonClass } from "@/components/ui";
 interface Block { key: string; title: string | null; body_md: string | null }
 
 const STEPS = [
-  { icon: Megaphone, title: "A directive is published", body: "A manufacturer (or ingested CPSC data) issues a recall against a model — targeted by serial range, lot, or unit." },
+  { icon: Megaphone, title: "A directive is published", body: "A manufacturer (or ingested CPSC data) issues a recall against a model, targeted by serial range, lot, or unit." },
   { icon: Database, title: "The safety guard updates", body: "The model's authoritative safety state and epoch are written in one Aurora DSQL transaction." },
-  { icon: ScanLine, title: "Every marketplace checks", body: "At listing and at checkout, the gate reads the live state — strongly consistent from any region." },
+  { icon: ScanLine, title: "Every marketplace checks", body: "At listing and at checkout, the gate reads the live state, strongly consistent from any region." },
   { icon: ShieldCheck, title: "The decision is enforced", body: "Recalled units are blocked at the moment of resale; safe units clear. The owner record follows the product." },
 ];
 
@@ -62,7 +62,7 @@ export default function HowItWorks() {
         <div className="mt-12">
           <Eyebrow>Architecture</Eyebrow>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight text-fg">
-            One logical, strongly-consistent database — across regions.
+            One logical, strongly-consistent database, across regions.
           </h2>
           <Card className="mt-5 p-7">
             <ArchitectureDiagram />
@@ -86,7 +86,7 @@ export default function HowItWorks() {
             <Eyebrow>The data model</Eyebrow>
             <ul className="mt-3 space-y-2.5 text-sm">
               {[
-                ["safety_guard", "one row per model — the conflict point + epoch"],
+                ["safety_guard", "one row per model, the conflict point + epoch"],
                 ["safety_directives", "recalls / repairs / destroy orders"],
                 ["directive_targets", "model · lot · serial-range · unit"],
                 ["ownership_transfers", "exact, audited transfers"],

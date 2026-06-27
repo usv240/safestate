@@ -36,7 +36,7 @@ export async function GET(request: Request) {
 
   const color = status === "BLOCKED" ? "#dc2626" : status === "CLEAR" ? "#059669" : "#d97706";
   const title =
-    status === "BLOCKED" ? "Recalled — do not resell" : status === "CLEAR" ? "No recall on record" : "Not in registry";
+    status === "BLOCKED" ? "Recalled, do not resell" : status === "CLEAR" ? "No recall on record" : "Not in registry";
   const sub =
     status === "BLOCKED"
       ? esc(hazard || "An active recall covers this unit.")

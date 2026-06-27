@@ -97,7 +97,7 @@ export default function LivePage() {
         </h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted">
           The two guarantees that make Aurora DSQL the right database for safety-critical
-          decisions — run them yourself, against the live cluster.
+          decisions, run them yourself, against the live cluster.
         </p>
 
         {info && (
@@ -119,8 +119,7 @@ export default function LivePage() {
               No stale-safe read, across regions
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-muted">
-              Issue a recall on Region A’s endpoint, then read it back from Region B’s endpoint —
-              immediately.
+              Issue a recall on Region A’s endpoint, then read it back from Region B’s endpoint, immediately.
             </p>
 
             <RegionMap
@@ -136,7 +135,7 @@ export default function LivePage() {
               <Button className="flex-1" onClick={runCrossRegion} disabled={busy === "cr"}>
                 {busy === "cr" ? <><Loader2 className="h-4 w-4 animate-spin" /> Running…</> : <><Zap className="h-4 w-4" /> Write to Region A → read from Region B</>}
               </Button>
-              <InfoHint text="Commits a recall through the us-east-1 endpoint, then reads the same row from the us-east-2 endpoint. With DSQL strong consistency, Region B sees it immediately — no replication-lag window." />
+              <InfoHint text="Commits a recall through the us-east-1 endpoint, then reads the same row from the us-east-2 endpoint. With DSQL strong consistency, Region B sees it immediately, no replication-lag window." />
             </div>
 
             {cr && (
@@ -148,7 +147,7 @@ export default function LivePage() {
               >
                 {cr.instant ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
                 {cr.instant
-                  ? "Region B saw the recall instantly — no replication-lag window."
+                  ? "Region B saw the recall instantly, no replication-lag window."
                   : "Region B read stale state."}
               </div>
             )}
@@ -163,7 +162,7 @@ export default function LivePage() {
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-muted">
               Two transactions write the same model’s safety guard at once. DSQL lets one commit and
-              rejects the other — the conflict our retry wrapper handles.
+              rejects the other, the conflict our retry wrapper handles.
             </p>
 
             <div className="mt-5 space-y-3">
@@ -181,21 +180,21 @@ export default function LivePage() {
               />
             </div>
             {conf && (
-              <p className="mt-3 text-xs text-muted">{conf.winner}. The winner varies each run — a real race, not a script.</p>
+              <p className="mt-3 text-xs text-muted">{conf.winner}. The winner varies each run, a real race, not a script.</p>
             )}
 
             <div className="mt-6 flex items-center gap-2">
               <Button className="flex-1" onClick={runConflict} disabled={busy === "conf"}>
                 {busy === "conf" ? <><Loader2 className="h-4 w-4 animate-spin" /> Running…</> : <><Zap className="h-4 w-4" /> Fire two conflicting transactions</>}
               </Button>
-              <InfoHint text="Runs two real transactions in parallel that both write the same guard row. DSQL's optimistic concurrency lets one commit and rejects the other with SQLSTATE 40001. The winner varies each run — a genuine race." />
+              <InfoHint text="Runs two real transactions in parallel that both write the same guard row. DSQL's optimistic concurrency lets one commit and rejects the other with SQLSTATE 40001. The winner varies each run, a genuine race." />
             </div>
 
             {conf?.loser && (
               <div className="mt-4 rounded-xl border border-border bg-surface2 p-3.5 animate-fade-up">
                 <p className="font-mono text-xs text-fg2">{conf.loser.message}</p>
                 <p className="mt-2 text-xs text-muted">
-                  In the app, the loser retries with backoff and re-reads the new truth — so the
+                  In the app, the loser retries with backoff and re-reads the new truth, so the
                   decision is always correct.
                 </p>
               </div>
@@ -210,7 +209,7 @@ export default function LivePage() {
           </h2>
           <p className="mt-1.5 max-w-3xl text-sm leading-relaxed text-muted">
             Fire 100 concurrent sale attempts at a recalled unit, against the live multi-region cluster. Every one must
-            be blocked — no amount of concurrency may let a recalled unit sell.
+            be blocked, no amount of concurrency may let a recalled unit sell.
           </p>
           <div className="mt-5 flex items-center gap-2">
             <Button onClick={runLoad} disabled={busy === "load"}>
@@ -244,7 +243,7 @@ export default function LivePage() {
                 {load.soldRecalled === 0 ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
                 {load.soldRecalled === 0
                   ? `All ${load.requested} concurrent attempts blocked. Zero recalled units sold under load.`
-                  : `${load.soldRecalled} recalled unit(s) sold — correctness violated.`}
+                  : `${load.soldRecalled} recalled unit(s) sold, correctness violated.`}
               </p>
             </>
           )}

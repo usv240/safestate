@@ -72,7 +72,7 @@ export function getPool(): Pool {
   return poolA;
 }
 
-/** Region-B pool — only available when a peer endpoint is configured. */
+/** Region-B pool, only available when a peer endpoint is configured. */
 export function getPoolB(): Pool | null {
   const endpoint = process.env.DSQL_ENDPOINT_REGION_B;
   if (!endpoint) return null;

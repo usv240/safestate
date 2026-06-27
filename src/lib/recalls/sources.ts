@@ -136,7 +136,7 @@ async function searchNhtsa(q: string, limit: number): Promise<RecallHit[]> {
     )) as NhtsaRaw;
     return (data.results ?? []).slice(0, limit).map((r) => ({
       agency: "NHTSA" as const,
-      title: `${v.year} ${v.make} ${v.model} — ${r.Component ?? "recall"}`.slice(0, 140),
+      title: `${v.year} ${v.make} ${v.model}, ${r.Component ?? "recall"}`.slice(0, 140),
       hazard: r.Summary ?? "",
       remedy: r.Remedy || undefined,
       date: r.ReportReceivedDate ?? "",

@@ -30,7 +30,7 @@ const GUARD_STATUS: Record<DirectiveKind, string> = {
 /**
  * Publishes a safety directive (recall/repair/destroy) and bumps the model's
  * safety_guard epoch + status. The guard UPDATE here writes the SAME row that
- * authorizeTransfer writes — that shared write is what makes DSQL's OCC detect
+ * authorizeTransfer writes, that shared write is what makes DSQL's OCC detect
  * a recall-vs-transfer conflict deterministically.
  */
 export async function issueDirective(input: IssueDirectiveInput): Promise<IssueDirectiveResult> {
